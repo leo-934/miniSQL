@@ -1,0 +1,2 @@
+# miniSQL
+a simple database
