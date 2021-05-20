@@ -1,4 +1,6 @@
 # miniSQL
 a simple database
 # Contributors
-@NishikinoSky
+[Wang Jianing](https://github.com/JianingWang43)
+
+[Wang Yitian](https://github.com/NishikinoSky)
