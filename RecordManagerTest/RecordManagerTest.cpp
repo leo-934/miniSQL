@@ -12,7 +12,6 @@ namespace RecordManagerTest
 		TEST_METHOD(TestMethod1)
 		{
 			BufferManager test;
-			int i;
 			Assert::AreEqual(2,test.test());
 		}
 	};
