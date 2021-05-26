@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "CppUnitTest.h"
-
+#include <assert.h>
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace RecordManagerTest
@@ -11,7 +11,7 @@ namespace RecordManagerTest
 		
 		TEST_METHOD(TestMethod1)
 		{
-
+			assert(1 == 2);
 		}
 	};
 }
