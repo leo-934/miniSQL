@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "CppUnitTest.h"
-#include "BufferManager.h"
+#include "RecordManager.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace RecordManagerTest
@@ -11,7 +11,7 @@ namespace RecordManagerTest
 		
 		TEST_METHOD(TestMethod1)
 		{
-			BufferManager test;
+			RecordManager test;
 			Assert::AreEqual(1,test.test());
 		}
 	};

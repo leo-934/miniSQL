@@ -3,5 +3,6 @@ class RecordManager {
 private:
 
 public:
+	int test();
 
 };

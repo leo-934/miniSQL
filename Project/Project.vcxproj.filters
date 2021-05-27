@@ -34,13 +34,22 @@
     <Filter Include="Header Files\App">
       <UniqueIdentifier>{10da4b5d-c2d9-4191-946c-ccb5bd5de5d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\BufferManager">
+      <UniqueIdentifier>{b32d17a5-d02b-4132-944f-33ea5f1fb06a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\RecordManager">
+      <UniqueIdentifier>{1967b4de-1475-4268-8a49-cc5d7c414613}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\include\BufferManager.cpp">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\BufferManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\RecordManager.cpp">
+      <Filter>Resource Files\RecordManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
