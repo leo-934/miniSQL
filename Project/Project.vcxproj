@@ -146,7 +146,14 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\API.h" />
+    <ClInclude Include="..\include\App.h" />
     <ClInclude Include="..\include\BufferManager.h" />
+    <ClInclude Include="..\include\CatalogManager.h" />
+    <ClInclude Include="..\include\def.h" />
+    <ClInclude Include="..\include\IndexManager.h" />
+    <ClInclude Include="..\include\Interpreter.h" />
+    <ClInclude Include="..\include\RecordManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,5 +1,5 @@
 #pragma once
-class BufferManager {
+class IndexManager {
 private:
 
 public:

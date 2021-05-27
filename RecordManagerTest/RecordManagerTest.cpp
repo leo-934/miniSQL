@@ -7,12 +7,12 @@ namespace RecordManagerTest
 {
 	TEST_CLASS(RecordManagerTest)
 	{
-	public:
+	public: 
 		
 		TEST_METHOD(TestMethod1)
 		{
 			BufferManager test;
-			Assert::AreEqual(2,test.test());
+			Assert::AreEqual(1,test.test());
 		}
 	};
 }

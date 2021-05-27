@@ -1,5 +1,5 @@
 #pragma once
-class BufferManager {
+class CatalogManager {
 private:
 
 public:

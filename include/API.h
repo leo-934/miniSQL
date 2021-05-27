@@ -1,5 +1,5 @@
 #pragma once
-class BufferManager {
+class API {
 private:
 
 public:

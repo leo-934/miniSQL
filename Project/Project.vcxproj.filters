@@ -13,6 +13,27 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\BufferManager">
+      <UniqueIdentifier>{f7c5aa52-7c78-4f92-b186-2d70be4ffd1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\RecordManager">
+      <UniqueIdentifier>{1226191a-f485-487f-b76c-5353ae418c0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IndexManager">
+      <UniqueIdentifier>{5ed1935f-8fbe-4fee-ac23-80c5a536183e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CatalogManager">
+      <UniqueIdentifier>{0acc8576-862b-4d90-be50-af677842b727}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\API">
+      <UniqueIdentifier>{d8cd076e-1549-4940-9829-d0330c516049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Interpreter">
+      <UniqueIdentifier>{a5271942-4a03-4634-a7fa-656a84d6f2a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\App">
+      <UniqueIdentifier>{10da4b5d-c2d9-4191-946c-ccb5bd5de5d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -24,6 +45,27 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\BufferManager.h">
+      <Filter>Header Files\BufferManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\App.h">
+      <Filter>Header Files\App</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Interpreter.h">
+      <Filter>Header Files\Interpreter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\API.h">
+      <Filter>Header Files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\CatalogManager.h">
+      <Filter>Header Files\CatalogManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\IndexManager.h">
+      <Filter>Header Files\IndexManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\RecordManager.h">
+      <Filter>Header Files\RecordManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\def.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,13 +1,15 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <any>
 
 #include "BufferManager.h"
-
+#include "def.h"
 int main()
 {
-    auto test = std::make_shared<BufferManager>();
-    std::cout << "Hello Sql!\n";
-    std::cout << test->test();
+    operation a = operation::selectRecord;
+    std::any b;
+    b = operation::selectRecord;
+    std::cout << (operation::selectRecord ==(*b._Cast<operation>()));
     return 0;
 }
