@@ -1,4 +1,4 @@
-#include "..\include\RecordManager.h"
+#include "RecordManager.h"
 
 int RecordManager::test()
 {
