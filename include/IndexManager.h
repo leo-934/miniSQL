@@ -3,5 +3,5 @@ class IndexManager {
 private:
 
 public:
-
+	int test();
 };

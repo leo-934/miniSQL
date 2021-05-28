@@ -3,5 +3,5 @@ class CatalogManager {
 private:
 
 public:
-
+	int test();
 };

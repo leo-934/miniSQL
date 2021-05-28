@@ -7,25 +7,16 @@
 #include "Interpreter.h"
 #include "RecordManager.h"
 
-class App {
+class APP {
 private:
 	std::shared_ptr<BufferManager> bufferManager;
-	std::shared_ptr<BufferManager> recordManager;
-	std::shared_ptr<BufferManager> indexManager;
-	std::shared_ptr<BufferManager> catalogManager;
-	std::shared_ptr<BufferManager> api;
-	std::shared_ptr<BufferManager> interpreter;
+	std::shared_ptr<RecordManager> recordManager;
+	std::shared_ptr<IndexManager> indexManager;
+	std::shared_ptr<CatalogManager> catalogManager;
+	std::shared_ptr<API> api;
+	std::shared_ptr<Interpreter> interpreter;
 
 public:
-	App() {
-		bufferManager = std::make_shared<BufferManager>();
-		recordManager = std::make_shared<RecordManager>();
-		indexManager = std::make_shared<IndexManager>();
-		catalogManager = std::make_shared<CatalogManager>();
-		api = std::make_shared<API>();
-		interpreter = std::make_shared<Interpreter>();
-	}
-	void run() {
-		
-	}
+	APP();
+	void run();
 };

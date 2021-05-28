@@ -3,5 +3,5 @@ class BufferManager {
 private:
 
 public:
-
+	int test();
 };
