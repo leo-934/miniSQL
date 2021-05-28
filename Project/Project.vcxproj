@@ -146,6 +146,7 @@
     <ClCompile Include="..\src\APP.cpp" />
     <ClCompile Include="..\src\BufferManager.cpp" />
     <ClCompile Include="..\src\CatalogManager.cpp" />
+    <ClCompile Include="..\src\def.cpp" />
     <ClCompile Include="..\src\IndexManager.cpp" />
     <ClCompile Include="..\src\Interpreter.cpp" />
     <ClCompile Include="..\src\RecordManager.cpp" />

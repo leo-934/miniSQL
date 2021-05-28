@@ -18,5 +18,8 @@ private:
 
 public:
 	APP();
+	/// <summary>
+	/// 开始运行数据库，包括登录，调用interpreter解析语句，调用API模块执行语句.
+	/// </summary>
 	void run();
 };

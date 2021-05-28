@@ -22,9 +22,6 @@
     <Filter Include="Header Files\IndexManager">
       <UniqueIdentifier>{5ed1935f-8fbe-4fee-ac23-80c5a536183e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\CatalogManager">
-      <UniqueIdentifier>{0acc8576-862b-4d90-be50-af677842b727}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\API">
       <UniqueIdentifier>{d8cd076e-1549-4940-9829-d0330c516049}</UniqueIdentifier>
     </Filter>
@@ -55,6 +52,15 @@
     <Filter Include="Resource Files\Interpreter">
       <UniqueIdentifier>{6aee306d-cb53-4ac5-a542-ec1ba245e3e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\CatalogManager">
+      <UniqueIdentifier>{0acc8576-862b-4d90-be50-af677842b727}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common">
+      <UniqueIdentifier>{0bf49b38-4271-4c9a-971c-17a8756673d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\common">
+      <UniqueIdentifier>{8e4d1e44-b8fc-46a0-84f7-54745ded7119}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -81,6 +87,9 @@
     <ClCompile Include="..\src\BufferManager.cpp">
       <Filter>Resource Files\BufferManager</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\def.cpp">
+      <Filter>Resource Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\BufferManager.h">
@@ -105,7 +114,7 @@
       <Filter>Header Files\RecordManager</Filter>
     </ClInclude>
     <ClInclude Include="..\include\def.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
