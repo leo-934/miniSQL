@@ -144,9 +144,10 @@
   <ItemGroup>
     <ClCompile Include="..\src\API.cpp" />
     <ClCompile Include="..\src\APP.cpp" />
+    <ClCompile Include="..\src\DataBlock.cpp" />
     <ClCompile Include="..\src\BufferManager.cpp" />
     <ClCompile Include="..\src\CatalogManager.cpp" />
-    <ClCompile Include="..\src\def.cpp" />
+    <ClCompile Include="..\src\Def.cpp" />
     <ClCompile Include="..\src\IndexManager.cpp" />
     <ClCompile Include="..\src\Interpreter.cpp" />
     <ClCompile Include="..\src\RecordManager.cpp" />
@@ -155,9 +156,10 @@
   <ItemGroup>
     <ClInclude Include="..\include\API.h" />
     <ClInclude Include="..\include\APP.h" />
+    <ClInclude Include="..\include\DataBlock.h" />
     <ClInclude Include="..\include\BufferManager.h" />
     <ClInclude Include="..\include\CatalogManager.h" />
-    <ClInclude Include="..\include\def.h" />
+    <ClInclude Include="..\include\Def.h" />
     <ClInclude Include="..\include\IndexManager.h" />
     <ClInclude Include="..\include\Interpreter.h" />
     <ClInclude Include="..\include\RecordManager.h" />

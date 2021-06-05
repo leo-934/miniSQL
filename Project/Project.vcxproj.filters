@@ -28,29 +28,8 @@
     <Filter Include="Header Files\Interpreter">
       <UniqueIdentifier>{a5271942-4a03-4634-a7fa-656a84d6f2a0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\BufferManager">
-      <UniqueIdentifier>{b32d17a5-d02b-4132-944f-33ea5f1fb06a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\RecordManager">
-      <UniqueIdentifier>{1967b4de-1475-4268-8a49-cc5d7c414613}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\API">
-      <UniqueIdentifier>{11ee3e1e-eecf-49d8-9607-e59df36993b0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\APP">
-      <UniqueIdentifier>{6a94b47b-7b76-4472-ba8f-793e21833665}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\APP">
       <UniqueIdentifier>{10da4b5d-c2d9-4191-946c-ccb5bd5de5d4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\CatalogManager">
-      <UniqueIdentifier>{95059a81-53b9-4b62-b384-b533de15ec47}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\IndexManager">
-      <UniqueIdentifier>{cfb56dd0-d610-465a-aefe-77811a5d2816}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Interpreter">
-      <UniqueIdentifier>{6aee306d-cb53-4ac5-a542-ec1ba245e3e4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\CatalogManager">
       <UniqueIdentifier>{0acc8576-862b-4d90-be50-af677842b727}</UniqueIdentifier>
@@ -58,8 +37,29 @@
     <Filter Include="Header Files\common">
       <UniqueIdentifier>{0bf49b38-4271-4c9a-971c-17a8756673d7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\common">
+    <Filter Include="Source Files\RecordManager">
+      <UniqueIdentifier>{1967b4de-1475-4268-8a49-cc5d7c414613}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Interpreter">
+      <UniqueIdentifier>{6aee306d-cb53-4ac5-a542-ec1ba245e3e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IndexManager">
+      <UniqueIdentifier>{cfb56dd0-d610-465a-aefe-77811a5d2816}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common">
       <UniqueIdentifier>{8e4d1e44-b8fc-46a0-84f7-54745ded7119}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CatalogManager">
+      <UniqueIdentifier>{95059a81-53b9-4b62-b384-b533de15ec47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BufferManager">
+      <UniqueIdentifier>{b32d17a5-d02b-4132-944f-33ea5f1fb06a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\APP">
+      <UniqueIdentifier>{6a94b47b-7b76-4472-ba8f-793e21833665}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\API">
+      <UniqueIdentifier>{11ee3e1e-eecf-49d8-9607-e59df36993b0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -67,28 +67,31 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\RecordManager.cpp">
-      <Filter>Resource Files\RecordManager</Filter>
+      <Filter>Source Files\RecordManager</Filter>
     </ClCompile>
     <ClCompile Include="..\src\APP.cpp">
-      <Filter>Resource Files\APP</Filter>
+      <Filter>Source Files\APP</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API.cpp">
-      <Filter>Resource Files\API</Filter>
+      <Filter>Source Files\API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\CatalogManager.cpp">
-      <Filter>Resource Files\CatalogManager</Filter>
+      <Filter>Source Files\CatalogManager</Filter>
     </ClCompile>
     <ClCompile Include="..\src\IndexManager.cpp">
-      <Filter>Resource Files\IndexManager</Filter>
+      <Filter>Source Files\IndexManager</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Interpreter.cpp">
-      <Filter>Resource Files\Interpreter</Filter>
+      <Filter>Source Files\Interpreter</Filter>
     </ClCompile>
     <ClCompile Include="..\src\BufferManager.cpp">
-      <Filter>Resource Files\BufferManager</Filter>
+      <Filter>Source Files\BufferManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\def.cpp">
-      <Filter>Resource Files\common</Filter>
+    <ClCompile Include="..\src\Def.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\DataBlock.cpp">
+      <Filter>Source Files\BufferManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,8 +116,11 @@
     <ClInclude Include="..\include\RecordManager.h">
       <Filter>Header Files\RecordManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\def.h">
+    <ClInclude Include="..\include\Def.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\DataBlock.h">
+      <Filter>Header Files\BufferManager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

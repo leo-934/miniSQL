@@ -8,5 +8,5 @@ public:
 	/// Executes the specified parse result.
 	/// </summary>
 	/// <param name="parseResult">The parse result from interpreter.</param>
-	void exec(anyVecPtr parseResult);
+	void exec(anyVec parseResult);
 };

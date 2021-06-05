@@ -4,8 +4,17 @@
 #include <memory>
 #include <any>
 #include <functional>
+using anyVec = std::vector<std::any>;
 using anyVecPtr = std::shared_ptr<std::vector<std::any> >;
-
+using int64 = unsigned long long;
+using byte = char;
+const int blockSpace = 4096;
+const int blockHeadSpace = 4;
+const int floatSpace = 4;
+const int intSpace = 4;
+const int charSpace = 1;
+const int recordValid = 1;
+const int recordInvalid = 0;
 enum class operation {//代表一个语句的操作类型
 	createTable,
 	dropTable,

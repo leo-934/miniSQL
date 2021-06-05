@@ -26,5 +26,5 @@ public:
 	/// enum operation+表名(string)条件个数+多个struct condition
 	/// 若为quit，则只有一个enum operation
 	/// </returns>
-	anyVecPtr parse(std::string sentence);
+	anyVec parse(std::string sentence);
 };
