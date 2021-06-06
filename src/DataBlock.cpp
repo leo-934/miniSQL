@@ -31,7 +31,7 @@ DataBlock::DataBlock(anyVec _cata)
 	recordMax = blockSpace / (recordSpace+1);
 }
 
-void DataBlock::fromFile(std::fstream & fs)
+void DataBlock::fromFile(std::ifstream & fs)
 {
 	
 	//fs.read((byte*)&recordNum, 4);//使用了c风格的类型转换，待修改
@@ -71,13 +71,12 @@ void DataBlock::fromFile(std::fstream & fs)
 	}
 }
 
-void DataBlock::toFile(std::fstream & fs)
+void DataBlock::toFile(std::ofstream & fs)
 {
 	//fs.write((char*)&recordNum, intSpace);
 	for (auto record : records) {
 		if (record.size() != 0) {
 			int a = fs.tellp();
-			int b = fs.tellg();
 
 			fs.write((byte*)&recordValid, charSpace);//写入非空标记
 			for (int i = 0, j = 0; i < record.size(); i++, j++) {
@@ -90,7 +89,6 @@ void DataBlock::toFile(std::fstream & fs)
 				}
 				else {
 					int a = fs.tellp();
-					int b = fs.tellg();
 					bool c = record[i].type() == typeid(float);
 					float d = *(record[i]._Cast<float>());
 					fs.write((byte*)(record[i]._Cast<float>()), floatSpace);

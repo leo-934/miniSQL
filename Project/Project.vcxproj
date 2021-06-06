@@ -151,6 +151,7 @@
     <ClCompile Include="..\src\IndexManager.cpp" />
     <ClCompile Include="..\src\Interpreter.cpp" />
     <ClCompile Include="..\src\RecordManager.cpp" />
+    <ClCompile Include="..\src\SqlScanner.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +164,7 @@
     <ClInclude Include="..\include\IndexManager.h" />
     <ClInclude Include="..\include\Interpreter.h" />
     <ClInclude Include="..\include\RecordManager.h" />
+    <ClInclude Include="..\include\SqlScanner.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

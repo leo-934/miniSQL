@@ -17,6 +17,8 @@ judge::judge(condition cond)
 			func = [cond](std::any attrValue)->bool {return *attrValue._Cast<int>() >= *cond.value._Cast<int>(); };
 		else if (cond.comp == comparison::high)
 			func = [cond](std::any attrValue)->bool {return *attrValue._Cast<int>() > *cond.value._Cast<int>(); };
+		else if (cond.comp == comparison::notEqual)
+			func = [cond](std::any attrValue)->bool {return *attrValue._Cast<int>() != *cond.value._Cast<int>(); };
 	}
 	else if (cond.cata == catalog::CHAR) {
 		if (cond.comp == comparison::low)
@@ -29,6 +31,8 @@ judge::judge(condition cond)
 			func = [cond](std::any attrValue)->bool {return *attrValue._Cast<std::string>() >= *cond.value._Cast<std::string>(); };
 		else if (cond.comp == comparison::high)
 			func = [cond](std::any attrValue)->bool {return *attrValue._Cast<std::string>() > *cond.value._Cast<std::string>(); };
+		else if (cond.comp == comparison::notEqual)
+			func = [cond](std::any attrValue)->bool {return *attrValue._Cast<std::string>() != *cond.value._Cast<std::string>(); };
 	}
 	else {
 		if (cond.comp == comparison::low)
@@ -41,6 +45,8 @@ judge::judge(condition cond)
 			func = [cond](std::any attrValue)->bool {return *attrValue._Cast<float>() >= *cond.value._Cast<float>(); };
 		else if (cond.comp == comparison::high)
 			func = [cond](std::any attrValue)->bool {return *attrValue._Cast<float>() > *cond.value._Cast<float>(); };
+		else if (cond.comp == comparison::notEqual)
+			func = [cond](std::any attrValue)->bool {return *attrValue._Cast<float>() != *cond.value._Cast<float>(); };
 	}
 }
 
