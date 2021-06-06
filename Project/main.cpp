@@ -7,9 +7,9 @@
 #include "def.h"
 int main()
 {
-    operation a = operation::selectRecord;
+    Operation a = Operation::selectRecord;
     std::any b;
-    b = operation::selectRecord;
-    std::cout << (operation::selectRecord ==(*b._Cast<operation>()));
+    b = Operation::selectRecord;
+    std::cout << (Operation::selectRecord ==(*b._Cast<Operation>()));
     return 0;
 }

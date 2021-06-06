@@ -22,9 +22,6 @@
     <Filter Include="Header Files\IndexManager">
       <UniqueIdentifier>{5ed1935f-8fbe-4fee-ac23-80c5a536183e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\API">
-      <UniqueIdentifier>{d8cd076e-1549-4940-9829-d0330c516049}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Interpreter">
       <UniqueIdentifier>{a5271942-4a03-4634-a7fa-656a84d6f2a0}</UniqueIdentifier>
     </Filter>
@@ -58,9 +55,6 @@
     <Filter Include="Source Files\APP">
       <UniqueIdentifier>{6a94b47b-7b76-4472-ba8f-793e21833665}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\API">
-      <UniqueIdentifier>{11ee3e1e-eecf-49d8-9607-e59df36993b0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Scanner">
       <UniqueIdentifier>{80ce6187-6c71-419b-a534-8906f38b7447}</UniqueIdentifier>
     </Filter>
@@ -77,9 +71,6 @@
     </ClCompile>
     <ClCompile Include="..\src\APP.cpp">
       <Filter>Source Files\APP</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\API.cpp">
-      <Filter>Source Files\API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\CatalogManager.cpp">
       <Filter>Source Files\CatalogManager</Filter>
@@ -112,9 +103,6 @@
     </ClInclude>
     <ClInclude Include="..\include\Interpreter.h">
       <Filter>Header Files\Interpreter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\API.h">
-      <Filter>Header Files\API</Filter>
     </ClInclude>
     <ClInclude Include="..\include\CatalogManager.h">
       <Filter>Header Files\CatalogManager</Filter>

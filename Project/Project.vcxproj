@@ -142,7 +142,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\API.cpp" />
     <ClCompile Include="..\src\APP.cpp" />
     <ClCompile Include="..\src\DataBlock.cpp" />
     <ClCompile Include="..\src\BufferManager.cpp" />
@@ -155,7 +154,6 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\API.h" />
     <ClInclude Include="..\include\APP.h" />
     <ClInclude Include="..\include\DataBlock.h" />
     <ClInclude Include="..\include\BufferManager.h" />

@@ -6,7 +6,6 @@ APP::APP()
 	recordManager = std::make_shared<RecordManager>();
 	indexManager = std::make_shared<IndexManager>();
 	catalogManager = std::make_shared<CatalogManager>();
-	api = std::make_shared<API>();
 	interpreter = std::make_shared<Interpreter>();
 }
 
@@ -19,33 +18,36 @@ void APP::run()
 	}
 }
 
-void APP::execSql(anyVec& parseResult)
+void APP::execSql(std::shared_ptr<Sentence> parseResult)
 {
-	if (*parseResult[0]._Cast<operation>() == operation::createTable) {
+	if (parseResult->op == Operation::createTable) {
+		auto res = std::dynamic_pointer_cast<CreateTableSentence>(parseResult);
+		catalogManager->addTableCata(*res);
+		if (res->primaryKey != "") indexManager->createIndex(res->primaryKey, res->tableName, res->primaryKey);
+		recordManager->createFile(res->tableName+".txt");
+	}
+	else if (parseResult->op == Operation::dropTable) {
 
 	}
-	else if (*parseResult[0]._Cast<operation>() == operation::dropTable) {
+	else if (parseResult->op == Operation::createIndex) {
 
 	}
-	else if (*parseResult[0]._Cast<operation>() == operation::createIndex) {
+	else if (parseResult->op == Operation::dropIndex) {
 
 	}
-	else if (*parseResult[0]._Cast<operation>() == operation::dropIndex) {
+	else if (parseResult->op == Operation::selectRecord) {
 
 	}
-	else if (*parseResult[0]._Cast<operation>() == operation::selectRecord) {
+	else if (parseResult->op == Operation::insertRecord) {
 
 	}
-	else if (*parseResult[0]._Cast<operation>() == operation::insertRecord) {
+	else if (parseResult->op == Operation::deleteRecord) {
 
 	}
-	else if (*parseResult[0]._Cast<operation>() == operation::deleteRecord) {
+	else if (parseResult->op == Operation::execFile) {
 
 	}
-	else if (*parseResult[0]._Cast<operation>() == operation::execFile) {
-
-	}
-	else if (*parseResult[0]._Cast<operation>() == operation::quit) {
+	else if (parseResult->op == Operation::quit) {
 
 	}
 }

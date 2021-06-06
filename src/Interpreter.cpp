@@ -2,7 +2,7 @@
 
 #
 
-anyVec Interpreter::parseSql(std::string sentence)
+std::shared_ptr<Sentence> Interpreter::parseSql(std::string sentence)
 {
-	return anyVec();
+	return std::shared_ptr<Sentence>();
 }

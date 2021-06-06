@@ -19,3 +19,7 @@ int CatalogManager::getTableBlockNum(std::string tableName)
 {
 	return 0;
 }
+
+void CatalogManager::addTableCata(CreateTableSentence sent)
+{
+}

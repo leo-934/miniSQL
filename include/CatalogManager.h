@@ -30,37 +30,6 @@ public:
 	/// <returns></returns>
 	int getTableBlockNum(std::string tableName);
 
-	/// <summary>
-	/// Determines whether [has clustered index] [the specified table name].
-	/// </summary>
-	/// <param name="tableName">Name of the table.</param>
-	/// <returns>
-	///   <c>true</c> if [has clustered index] [the specified table name]; otherwise, <c>false</c>.
-	/// </returns>
-	bool hasClusteredIndex(std::string tableName);
-
-	/// <summary>
-	/// Gets the index of the clustered.
-	/// </summary>
-	/// <param name="tableName">Name of the table.</param>
-	/// <returns></returns>
-	std::string getClusteredIndex(std::string tableName);
-
-	/// <summary>
-	/// Determines whether [has non clustered index] [the specified table name].
-	/// </summary>
-	/// <param name="tableName">Name of the table.</param>
-	/// <returns>
-	///   <c>true</c> if [has non clustered index] [the specified table name]; otherwise, <c>false</c>.
-	/// </returns>
-	bool hasNonClusteredIndex(std::string tableName);
-
-	/// <summary>
-	/// Gets the index of the non clustered.
-	/// </summary>
-	/// <param name="tableName">Name of the table.</param>
-	/// <returns></returns>
-	std::vector<std::string> getNonClusteredIndex(std::string tableName);
-
 	
+	void addTableCata(CreateTableSentence sent);
 };

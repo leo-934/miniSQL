@@ -3,7 +3,6 @@
 #include "BufferManager.h"
 #include "IndexManager.h"
 #include "CatalogManager.h"
-#include "API.h"
 #include "Interpreter.h"
 #include "RecordManager.h"
 
@@ -13,7 +12,6 @@ private:
 	std::shared_ptr<RecordManager> recordManager;
 	std::shared_ptr<IndexManager> indexManager;
 	std::shared_ptr<CatalogManager> catalogManager;
-	std::shared_ptr<API> api;
 	std::shared_ptr<Interpreter> interpreter;
 
 public:
@@ -26,5 +24,5 @@ public:
 	/// Executes the SQL.
 	/// </summary>
 	/// <param name="parseResult">The parse result.</param>
-	void execSql(anyVec& parseResult);
+	void execSql(std::shared_ptr<Sentence> parseResult);
 };
