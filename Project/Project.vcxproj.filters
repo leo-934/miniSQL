@@ -61,6 +61,12 @@
     <Filter Include="Source Files\Scanner">
       <UniqueIdentifier>{c5abe708-8847-40ab-b266-e1c4a1dc1daf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Writer">
+      <UniqueIdentifier>{7b55760e-0f64-4e75-80bc-f4da6fcc5d88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Writer">
+      <UniqueIdentifier>{56de543a-f36d-464e-b4f9-f2be3dc06ad0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -93,6 +99,9 @@
     <ClCompile Include="..\src\SqlScanner.cpp">
       <Filter>Source Files\Scanner</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Writer.cpp">
+      <Filter>Source Files\Writer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\BufferManager.h">
@@ -121,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="..\include\SqlScanner.h">
       <Filter>Header Files\Scanner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Writer.h">
+      <Filter>Header Files\Writer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

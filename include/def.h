@@ -42,7 +42,7 @@ enum class catalog {//代表一个属性的类型
 	CHAR,
 	FLOAT
 };
-struct condition {//代表一个where条件
+struct condition {//代表一个where条件er                                                                                                                                                                                                                                                                                                                                      
 	std::string attrName;//属性名
 	catalog cata;//属性的类型
 	comparison comp;//比较类型

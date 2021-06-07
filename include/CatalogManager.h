@@ -29,7 +29,7 @@ public:
 	/// <param name="tableName">Name of the table.</param>
 	/// <returns></returns>
 	int getTableBlockNum(std::string tableName);
-
 	
-	void addTableCata(CreateTableSentence sent);
+	void createTable(CreateTableSentence sent);
+	void dropTable(std::string tableName);
 };
