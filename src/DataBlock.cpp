@@ -7,6 +7,7 @@ DataBlock::DataBlock(anyVec _cata)
 {
 	//recordNum = 0;
 	cata = _cata;
+
 	int _recordSpace=0;
 	int i = 0, len = cata.size();
 	while (i < len) {

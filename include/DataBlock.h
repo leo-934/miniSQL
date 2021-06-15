@@ -8,7 +8,7 @@ public:
 	/// Initializes a new instance of the <see cref="DataBlock"/> class.
 	/// </summary>
 	/// <param name="_catalog">传入一个vector代表记录的类型</param>
-	DataBlock(anyVec _cata);
+	DataBlock(anyVec _cata); 
 	
 	/// <summary>
 	/// 把块读出文件

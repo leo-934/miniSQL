@@ -54,10 +54,26 @@ public:
 	/// <param name="fileAddresses">The file addresses.</param>
 	void insertToIndex(std::string tableName, anyVec values, int64 fileAddresses);
 
+	/// <summary>
+	/// Selects the indexs by condition.
+	/// </summary>
+	/// <param name="TableName">Name of the table.</param>
+	/// <param name="indexName">Name of the index.</param>
+	/// <param name="cond">The cond.</param>
+	/// <returns></returns>
 	std::vector<int64> selectIndexsByCondition(std::string TableName, std::string indexName, std::vector<condition> cond);
+	
+	/// <summary>
+	/// 删除一个表的所有索引中指向给定地址的索引项
+	/// </summary>
+	/// <param name="tableName">Name of the table.</param>
+	/// <param name="addresses">The addresses.</param>
+	void removeAllIndexByAddress(std::string tableName, std::vector<int64> addresses);
+	//void removeIndexByCondition(std::string TableName, std::string indexName, condition cond);
+	//void removeIndexByCondition(std::string TableName, std::string indexName, std::vector<condition> cond);
+ 
+	
 
-	void removeIndexByCondition(std::string TableName, std::string indexName, condition cond);
-	void removeIndexByCondition(std::string TableName, std::string indexName, std::vector<condition> cond);
 	/// <summary>
 	/// Determines whether [has clustered index] [the specified table name].
 	/// </summary>
@@ -121,30 +137,31 @@ public:
 
 	//std::string getBestIndex(std::string tableName);
 
+	
+};
+/// <summary>
+/// 实现一个b+树叶节点中fileAddress的迭代器
+/// </summary>
+class indexIterator {
+
+public:
 	/// <summary>
-	/// 实现一个b+树叶节点中fileAddress的迭代器
+	/// Initializes a new instance of the <see cref="indexIterator"/> class.
 	/// </summary>
-	class indexIterator {
+	/// <param name="tableName">Name of the table.</param>
+	/// <param name="indexName">Name of the index.</param>
+	indexIterator(std::string tableName, std::string indexName);
+	/// <summary>
+	/// 将迭代器的位置改为第i个地址的位置，下标从0开始。
+	/// 比如changePlaceByIndex(0)则为第一个地址
+	/// </summary>
+	/// <param name="index">The index.</param>
+	/// <returns></returns>
+	void changePlaceByIndex(int64 i);
+	/// <summary>
+	/// 将迭代器的位置改为下一个元素
+	/// </summary>
+	/// <returns>若存在下一个元素，返回true,不存在则返回false</returns>
+	bool next();
 
-	public:
-		/// <summary>
-		/// Initializes a new instance of the <see cref="indexIterator"/> class.
-		/// </summary>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="indexName">Name of the index.</param>
-		indexIterator(std::string tableName, std::string indexName);
-		/// <summary>
-		/// 将迭代器的位置改为第i个地址的位置，下标从0开始。
-		/// 比如changePlaceByIndex(0)则为第一个地址
-		/// </summary>
-		/// <param name="index">The index.</param>
-		/// <returns></returns>
-		void changePlaceByIndex(int64 i);
-		/// <summary>
-		/// 将迭代器的位置改为下一个元素
-		/// </summary>
-		/// <returns>若存在下一个元素，返回true,不存在则返回false</returns>
-		bool next();
-
-	};
 };
