@@ -6,9 +6,15 @@ int RecordManager::test()
 	return 1;
 }
 
+RecordManager::RecordManager(std::shared_ptr<BufferManager> ptr)
+{
+	bufferManager = ptr;
+}
+
 int64 RecordManager::insertRecordToTable(std::string tableName, anyVec values)
 {
-	return int64();
+	bufferManager->insertRecordToTable(tableName, anyVec);
+	
 }
 
 std::vector<int64> RecordManager::removeRecordsByAddressAndCondition(std::string tableName, std::vector<int64> addresses, std::vector<condition> conds)
@@ -16,7 +22,7 @@ std::vector<int64> RecordManager::removeRecordsByAddressAndCondition(std::string
 	return std::vector<int64>();
 }
 
-std::vector<std::string> RecordManager::selectRecordsByAddressAndCondition(std::string tableName, std::vector<int64> addresses, std::vector<condition> conds)
+anyVec RecordManager::selectRecordsByAddressAndCondition(std::string tableName, std::vector<int64> addresses, std::vector<condition> conds)
 {
-	return std::vector<std::string>();
+	return anyVec();
 }

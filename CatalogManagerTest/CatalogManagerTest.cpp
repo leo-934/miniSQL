@@ -24,6 +24,10 @@ namespace CatalogManagerTest
 			sent.attrCata.insert(std::map<std::string, catalog>::value_type("qwe", catalog::FLOAT));
 			sent.attrCata.insert(std::map<std::string, catalog>::value_type("asd", catalog::INT));
 			sent.attrCata.insert(std::map<std::string, catalog>::value_type("zxc", catalog::CHAR));
+			sent.attrLenForChar.insert(std::map<std::string, int>::value_type("zxc", 25));
+			sent.primaryKey = "qwe";
+			sent.uniqueKeys.push_back("qwe");
+			sent.uniqueKeys.push_back("asd");
 			test.createTable(sent);
 			test.close();
 			CatalogManager result;

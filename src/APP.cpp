@@ -2,10 +2,10 @@
 #include "SqlScanner.h"
 APP::APP()
 {
-	bufferManager = std::make_shared<BufferManager>();
-	recordManager = std::make_shared<RecordManager>();
-	indexManager = std::make_shared<IndexManager>();
 	catalogManager = std::make_shared<CatalogManager>();
+	bufferManager = std::make_shared<BufferManager>(catalogManager);
+	recordManager = std::make_shared<RecordManager>(bufferManager);
+	indexManager = std::make_shared<IndexManager>();
 	interpreter = std::make_shared<Interpreter>();
 }
 
@@ -24,13 +24,13 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 		auto res = std::dynamic_pointer_cast<CreateTableSentence>(parseResult);
 		catalogManager->createTable(*res);
 		if (res->primaryKey != "") indexManager->createIndex(res->primaryKey, res->tableName, res->primaryKey);
-		//bufferManager->createTable(res->tableName);
+		bufferManager->createTable(res->tableName);
 	}
 	else if (parseResult->op == Operation::dropTable) {
 		auto res = std::dynamic_pointer_cast<DropTableSentence>(parseResult);
 		catalogManager->dropTable(res->tableName);
 		indexManager->dropAllIndex(res->tableName);
-		//bufferManager->dropTable(res->tableName);
+		bufferManager->dropTable(res->tableName);
 	}
 	else if (parseResult->op == Operation::createIndex) {
 		auto res = std::dynamic_pointer_cast<CreateIndexSentence>(parseResult);

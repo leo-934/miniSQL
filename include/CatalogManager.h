@@ -9,8 +9,8 @@ class CatalogManager {
 private:
 	std::map<std::string, std::map<std::string, catalog> > catas;
 	std::map<std::string,std::map<std::string, int> > attrLenForChars;
-	std::map<std::string, std::string> primaryKeys;//若没有，置为空字符串
-	std::map<std::string, std::vector<std::string> > uniqueKeys;//若没有，size置为0
+	std::map<std::string, std::string> primaryKeys;//若没有，则找不到
+	std::map<std::string, std::vector<std::string> > uniqueKeys;//若没有，则找不到
 public:
 	int test();
 	/// <summary>
@@ -43,6 +43,7 @@ public:
 	///// <returns></returns>
 	//int getTableBlockNum(std::string tableName);
 	
+	anyVec getCataInAnyVec(std::string tableName);
 	std::vector<std::string> getAllTableNames();
 	std::vector<std::string> getAllAttrByTableName(std::string tableName);
 	void createTable(CreateTableSentence sent);

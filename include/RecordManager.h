@@ -1,11 +1,15 @@
 #pragma once
 #include <string>
+#include <memory>
+#include "BufferManager.h"
 #include "Def.h"
 class RecordManager {
 private:
-
+	std::shared_ptr<BufferManager> bufferManager;
 public:
 	int test();
+
+	RecordManager(std::shared_ptr<BufferManager> ptr);
 	/// <summary>
 	/// Inserts the record to table.
 	/// </summary>
@@ -29,5 +33,5 @@ public:
 	/// <param name="addresses">The addresses.</param>
 	/// <param name="conds">The conds.</param>
 	/// <returns></returns>
-	std::vector<std::string> selectRecordsByAddressAndCondition(std::string tableName, std::vector<int64> addresses, std::vector<condition> conds);
+	anyVec selectRecordsByAddressAndCondition(std::string tableName, std::vector<int64> addresses, std::vector<condition> conds);
 };

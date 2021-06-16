@@ -1,6 +1,7 @@
 #include <exception>
 #include <fstream>
 #include <map>
+#include <utility>
 #include "Def.h"
 #include "CatalogManager.h"
 int CatalogManager::test()
@@ -16,7 +17,10 @@ CatalogManager::CatalogManager()//待测试
 		//
 		return;
 	}
-	while (1) {
+	//read catas
+	int catasSize;
+	fs >> catasSize;
+	for(int j=0;j<catasSize;++j) {
 		std::string tableName;
 		fs >> tableName;
 		if (fs.eof()) break;
@@ -32,18 +36,85 @@ CatalogManager::CatalogManager()//待测试
 		}
 		catas.insert(std::map< std::string, std::map<std::string, catalog> >::value_type(tableName, attrs));
 	}
+	//read attrLenForChars
+	int aLFCSize;
+	fs >> aLFCSize;
+	for (int j = 0; j < aLFCSize; ++j) {
+		std::string tableName;
+		fs >> tableName;
+		if (fs.eof()) break;
+		int attrForCharNum;
+		fs >> attrForCharNum;
+		std::map<std::string, int> attrForChars;
+		for (int i = 0; i < attrForCharNum; ++i) {
+			std::string attrName;
+			int len;
+			fs >> attrName;
+			fs >> len;
+			attrForChars.insert(std::map<std::string, int>::value_type(attrName, len));
+		}
+		attrLenForChars.insert(std::map<std::string, std::map<std::string, int> >::value_type(tableName, attrForChars));
+	}
+	//read primarykeys
+	int primaryKeysSize;
+	fs >> primaryKeysSize;
+	for (int j = 0; j < primaryKeysSize; ++j) {
+		std::string tableName, pKey;
+		fs >> tableName >> pKey;
+		primaryKeys.insert(std::map<std::string, std::string>::value_type(tableName,pKey));
+	}
+	//read uniqueKeys
+	int uniqueKeysSize;
+	fs >> uniqueKeysSize;
+	for (int j = 0; j < uniqueKeysSize; ++j) {
+		std::string tableName;
+		fs >> tableName;
+		int uKeyNum;
+		fs >> uKeyNum;
+		std::vector<std::string> uKeys;
+		for (int i = 0; i < uKeyNum; ++i) {
+			std::string uKeyName;
+			fs >> uKeyName;
+			uKeys.push_back(uKeyName);
+		}
+		uniqueKeys.insert(std::map<std::string, std::vector<std::string> >::value_type(tableName, uKeys));
+	}
+	return;
 }
 
 void CatalogManager::close()//待测试
 {
 	std::ofstream fs("catas.bin", std::fstream::out);
+	//write catas
+	fs << catas.size() << " ";
 	for (auto i : catas) {
 		fs << i.first << " " << i.second.size()<<" ";
 		for (auto j : i.second) {
 			fs << j.first<<" "<< static_cast<std::underlying_type_t<catalog>>(j.second)<<" ";
 		}
 	}
-}
+	//write attrLenForChars
+	fs << attrLenForChars.size() << " ";
+	for (auto i : attrLenForChars) {
+		fs << i.first << " " << i.second.size() << " ";
+		for (auto j : i.second) {
+			fs << j.first << " " << j.second << " ";
+		}
+	}
+	//write primaryKeys
+	fs << primaryKeys.size() << " ";
+	for (auto i : primaryKeys) {
+		fs << i.first << " " << i.second << " ";
+	}
+	//write uniqueKeys
+	fs << uniqueKeys.size() << " ";
+	for (auto i : primaryKeys) {
+		fs << i.first << " " << i.second.size() << " ";
+		for (auto j : i.second) {
+			fs << j << " ";
+		}
+	}
+} 
 
 catalog CatalogManager::getCataByAttrName(std::string tableName, std::string attrName)
 {
@@ -64,6 +135,17 @@ catalog CatalogManager::getCataByAttrName(std::string tableName, std::string att
 //	return 0;
 //}
 
+anyVec CatalogManager::getCataInAnyVec(std::string tableName)
+{
+	anyVec res;
+	for (auto i : catas[tableName]) {
+		res.push_back(static_cast<catalog>(i.second));
+		if (i.second == catalog::CHAR) res.push_back(static_cast<int>(attrLenForChars[tableName][i.first]));
+	}
+	return res;
+}
+
+
 std::vector<std::string> CatalogManager::getAllTableNames()
 {
 	std::vector<std::string> res;
@@ -82,14 +164,14 @@ void CatalogManager::createTable(CreateTableSentence sent)
 {
 	catas.insert(std::map< std::string, std::map<std::string, catalog> >::value_type(sent.tableName, sent.attrCata));
 	attrLenForChars.insert(std::map<std::string, std::map<std::string, int> >::value_type(sent.tableName, sent.attrLenForChar));
-	primaryKeys.insert(std::map<std::string, std::string>::value_type(sent.tableName, sent.primaryKey));
-	uniqueKeys.insert(std::map<std::string, std::vector<std::string> >::value_type(sent.tableName, sent.uniqueKeys));
+	if(sent.primaryKey!=" ") primaryKeys.insert(std::map<std::string, std::string>::value_type(sent.tableName, sent.primaryKey));
+	if(sent.uniqueKeys.size()!=0) uniqueKeys.insert(std::map<std::string, std::vector<std::string> >::value_type(sent.tableName, sent.uniqueKeys));
 }
 
 void CatalogManager::dropTable(std::string tableName)
 {
 	catas.erase(catas.find(tableName));
 	attrLenForChars.erase(attrLenForChars.find(tableName));
-	primaryKeys.erase(primaryKeys.find(tableName));
-	uniqueKeys.erase(uniqueKeys.find(tableName));
+	if (primaryKeys.find(tableName)!=primaryKeys.end()) primaryKeys.erase(primaryKeys.find(tableName));
+	if (uniqueKeys.find(tableName) != uniqueKeys.end()) uniqueKeys.erase(uniqueKeys.find(tableName));
 }

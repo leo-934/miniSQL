@@ -117,8 +117,33 @@ void DataBlock::removeRecord(int num)
 void DataBlock::addRecord(anyVec& recToAdd)
 {
 	if(records.size()<recordMax) records.push_back(recToAdd);
+	/*
 	else {
-		//溢出块满了，需要排序
+		溢出块满了，需要排序
 	}
+	*/
+}
+
+anyVec DataBlock::getRecord(int64 recordSerial)
+{
+	return records[recordSerial];
+}
+
+
+
+bool DataBlock::isAbleToAdd()
+{
+	if (records.size() == recordMax) return false;
+	else return true;
+}
+
+int64 DataBlock::getRecordNum()
+{
+	return int64(records.size());
+}
+
+int64 DataBlock::getRecordMax()
+{
+	return int64(recordMax);
 }
 

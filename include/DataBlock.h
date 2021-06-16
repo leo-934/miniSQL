@@ -41,6 +41,12 @@ public:
 	/// </summary>
 	/// <param name="recToAdd">The record to add.</param>
 	void addRecord(anyVec& recToAdd);
+
+	anyVec getRecord(int64 recordSerial);
+
+	bool isAbleToAdd();
+	int64 getRecordNum();
+	int64 getRecordMax();
 private:
 	int recordMax;
 	int recordSpace;
