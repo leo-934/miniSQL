@@ -4,7 +4,7 @@ APP::APP()
 {
 	catalogManager = std::make_shared<CatalogManager>();
 	bufferManager = std::make_shared<BufferManager>(catalogManager);
-	recordManager = std::make_shared<RecordManager>(bufferManager);
+	recordManager = std::make_shared<RecordManager>(bufferManager,catalogManager);
 	indexManager = std::make_shared<IndexManager>();
 	interpreter = std::make_shared<Interpreter>();
 }

@@ -1,20 +1,49 @@
 #include <exception>
+#include <climits>
 #include <fstream>
 #include "BufferManager.h"
+#include "Def.h"
+int64 BufferManager::nextOrder = 0;
 int64 BufferManager::getBlockNum(std::string tableName)
 {
 	if (blockNum.find(tableName) == blockNum.end()) throw std::exception("no such table");
 	return blockNum.find(tableName)->second;
 }
 
+void BufferManager::removeLRUBlock()
+{
+	int64 lru=ULLONG_MAX;
+	std::map<blockLabel, DataBlock>::iterator lruIter;
+	for (auto iter = buffer.begin(); iter != buffer.end();iter++) {
+		if (iter->first.useOrder < lru) {
+			lru = iter->first.useOrder;
+			lruIter = iter;
+		}
+	}
+	std::ofstream fs(lruIter->first.tableName + ".bin", std::ifstream::binary | std::ifstream::out);
+	fs.seekp(lruIter->first.blockSerial * blockSpace, std::ifstream::beg);
+	lruIter->second.toFile(fs);
+	buffer.erase(lruIter);
+}
+
 DataBlock& BufferManager::refBlockByLabel(std::string tableName, int64 blockSerial)
 {
-	return buffer[{ tableName, blockSerial }];
+	if (buffer.size() >= bufferMaxSize) removeLRUBlock();
+	DataBlock d(catalogManager->getCataInAnyVec(tableName));
+	std::ifstream fs(tableName + ".bin", std::ifstream::binary | std::ifstream::in);
+	fs.seekg(blockSerial * blockSpace, std::ifstream::beg);
+	d.fromFile(fs);
+	buffer.insert(std::map<blockLabel, DataBlock>::value_type(blockLabel(tableName,blockSerial,nextOrder), d));
+	nextOrder++;
+	return buffer[blockLabel(tableName, blockSerial,0)];
 }
 
 void BufferManager::insertBlock(std::string tableName, int64 blockSerial, DataBlock d)
 {
-	buffer.insert(std::map<blockLabel, DataBlock>::value_type({ tableName,blockSerial }, d));
+	if (buffer.size() >= bufferMaxSize) removeLRUBlock();
+	buffer.insert(std::map<blockLabel, DataBlock>::value_type(blockLabel(tableName, blockSerial, nextOrder), d));
+	nextOrder++;
+
 }
 
 int64 BufferManager::getRecordNum(std::string tableName)
@@ -31,6 +60,15 @@ int BufferManager::test()
 BufferManager::BufferManager(std::shared_ptr<CatalogManager> ptr)
 {
 	catalogManager = ptr;
+}
+
+void BufferManager::close()
+{
+	for (auto i : buffer) {
+		std::ofstream fs(i.first.tableName + ".bin", std::ifstream::binary | std::ifstream::out);
+		fs.seekp(i.first.blockSerial * blockSpace, std::ifstream::beg);
+		i.second.toFile(fs);
+	}
 }
 
 int64 BufferManager::insertRecordToTable(std::string tableName, anyVec values)
@@ -61,12 +99,12 @@ anyVec BufferManager::getRecordByAddress(std::string tableName, int64 addresses)
 	return refBlockByLabel(tableName, blockSerial).getRecord(recordSerialInBlock);
 }
 
-void BufferManager::deleteRecordByAddress(std::string tableName, int64 addresses)
+void BufferManager::deleteRecordByAddress(std::string tableName, int64 address)
 {
-	if (addresses >= recordNum[tableName]) throw std::exception("address out of bound");
+	if (address >= recordNum[tableName]) throw std::exception("address out of bound");
 	auto blockTmp = refBlockByLabel(tableName, 0);
-	int64 blockSerial = (addresses) / (blockTmp.getRecordMax());
-	int64 recordSerialInBlock = (addresses) % (blockTmp.getRecordMax());
+	int64 blockSerial = (address) / (blockTmp.getRecordMax());
+	int64 recordSerialInBlock = (address) % (blockTmp.getRecordMax());
 	refBlockByLabel(tableName, blockSerial).removeRecord(recordSerialInBlock);
 	recordNum[tableName]--;
 	return;
@@ -81,4 +119,11 @@ void BufferManager::createTable(std::string tableName)
 void BufferManager::dropTable(std::string tableName)
 {
 
+}
+
+BufferManager::blockLabel::blockLabel(std::string _tableName, int64 _blockSerial, int64 _useOrder)
+{
+	tableName = _tableName;
+	blockSerial = _blockSerial;
+	useOrder = _useOrder;
 }

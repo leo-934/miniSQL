@@ -2,14 +2,19 @@
 #include <string>
 #include <memory>
 #include "BufferManager.h"
+#include "CatalogManager.h"
 #include "Def.h"
 class RecordManager {
 private:
 	std::shared_ptr<BufferManager> bufferManager;
+	std::shared_ptr<CatalogManager> catalogManager;
+
+	bool judgeCondition(std::string tableName, anyVec record, condition cond);
+	
 public:
 	int test();
 
-	RecordManager(std::shared_ptr<BufferManager> ptr);
+	RecordManager(std::shared_ptr<BufferManager> ptr1, std::shared_ptr<CatalogManager> ptr2);
 	/// <summary>
 	/// Inserts the record to table.
 	/// </summary>
@@ -33,5 +38,5 @@ public:
 	/// <param name="addresses">The addresses.</param>
 	/// <param name="conds">The conds.</param>
 	/// <returns></returns>
-	anyVec selectRecordsByAddressAndCondition(std::string tableName, std::vector<int64> addresses, std::vector<condition> conds);
+	std::vector<anyVec> selectRecordsByAddressAndCondition(std::string tableName, std::vector<int64> addresses, std::vector<condition> conds);
 };

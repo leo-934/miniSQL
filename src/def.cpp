@@ -1,9 +1,9 @@
 #include "..\include\def.h"
-catalog judge::getCata()
+catalog judger::getCata()
 {
 	return cata;
 }
-judge::judge(condition cond)
+judger::judger(condition cond)
 {
 	cata = cond.cata;
 	if (cond.cata == catalog::INT) {
@@ -50,7 +50,7 @@ judge::judge(condition cond)
 	}
 }
 
-bool judge::operator()(std::any attrValue)
+bool judger::operator()(std::any attrValue)
 {
 	return func(attrValue);
 }

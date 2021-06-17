@@ -8,25 +8,31 @@
 #include "Def.h"
 class BufferManager {
 private:
-	std::shared_ptr<CatalogManager> catalogManager;
+	const int bufferMaxSize = 64;
 
+	std::shared_ptr<CatalogManager> catalogManager;
 	struct blockLabel{
 		std::string tableName;
-		int64 blockSerial;//´Ó0¿ªÊ¼
+		int64 blockSerial;//ä»0å¼€å§‹
+		int64 useOrder;
+		blockLabel(std::string _tableName, int64 _blockSerial, int64 _useOrder);
 		bool operator <(blockLabel x) {
 			if (this->tableName < x.tableName) return true;
 			else if (this->tableName > x.tableName) return false;
 			else return this->blockSerial < x.blockSerial;
 		}
 	};
+	static int64 nextOrder;
+
 	std::map<blockLabel, DataBlock> buffer;
 	std::map<std::string, int64> blockNum;
 	std::map<std::string, int64> recordNum;
 	std::set<std::string> tableNames;
 	int64 getBlockNum(std::string tableName);
 	
+	void removeLRUBlock();
 	/// <summary>
-	/// ´úÀíÒıÓÃbuffer,Í¨¹ıĞŞ¸ÄÕâ¸öº¯Êı¿ÉÒÔ¹ÜÀí»º³åÇø
+	/// ä»£ç†å¼•ç”¨buffer,é€šè¿‡ä¿®æ”¹è¿™ä¸ªå‡½æ•°å¯ä»¥ç®¡ç†ç¼“å†²åŒº
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
 	/// <param name="blockSerial">The block serial.</param>
@@ -34,7 +40,7 @@ private:
 	DataBlock& refBlockByLabel(std::string tableName, int64 blockSerial);
 
 	/// <summary>
-	/// ´úÀí²åÈëbuffer,Í¨¹ıĞŞ¸ÄÕâ¸öº¯Êı¿ÉÒÔ¹ÜÀí»º³åÇø
+	/// ä»£ç†æ’å…¥buffer,é€šè¿‡ä¿®æ”¹è¿™ä¸ªå‡½æ•°å¯ä»¥ç®¡ç†ç¼“å†²åŒº
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
 	/// <param name="blockSerial">The block serial.</param>
@@ -48,6 +54,7 @@ public:
 	/// </summary>
 	/// <param name="ptr">The PTR.</param>
 	BufferManager(std::shared_ptr<CatalogManager> ptr);
+	void close();
 	/// <summary>
 	/// Gets the record number.
 	/// </summary>
@@ -73,7 +80,7 @@ public:
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
 	/// <param name="addresses">The addresses.</param>
-	void deleteRecordByAddress(std::string tableName, int64 addresses);
+	void deleteRecordByAddress(std::string tableName, int64 address);
 	/// <summary>
 	/// Creates the table.
 	/// </summary>

@@ -99,12 +99,12 @@ struct QuitSentence :public Sentence {
 
 
 
-class judge {//用于判断一个where条件的函数对象，构造函数传入一个condition，可以直接调用。
+class judger {//用于判断一个where条件的函数对象，构造函数传入一个condition，可以直接调用。
 private:
 	catalog cata;
 	std::function<bool(std::any)> func;
 public:
 	catalog getCata();
-	judge(condition cond);
+	judger(condition cond);
 	bool operator()(std::any);
 };

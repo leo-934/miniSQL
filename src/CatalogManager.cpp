@@ -158,6 +158,7 @@ std::vector<std::string> CatalogManager::getAllAttrByTableName(std::string table
 	std::vector<std::string> res;
 	if(catas.find(tableName)==catas.end()) throw std::exception("no this table");
 	for (auto i : catas[tableName]) res.push_back(i.first);
+	return res;
 }
 
 void CatalogManager::createTable(CreateTableSentence sent)
