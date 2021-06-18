@@ -47,7 +47,7 @@ struct condition {//代表一个where条件er
 	catalog cata;//属性的类型
 	comparison comp;//比较类型
 	std::any value;//比较值
-};
+}cond;
 
 //这是一个基类，下面几个是派生类，分别代表九种语句
 //这些struct用来作为interpreter的parseSql函数的返回值
@@ -64,47 +64,47 @@ struct CreateTableSentence :public Sentence{
 	std::map<std::string, int> attrLenForChar;
 	std::string primaryKey;//若没有，置为空字符串
 	std::vector<std::string> uniqueKeys;//若没有，size置为0
-};
+}cts;
 struct DropTableSentence :public Sentence {
 	std::string tableName;
-};
+}dts;
 struct CreateIndexSentence :public Sentence {
 	std::string indexName;
 	std::string tableName;
 	std::string attrName;
-};
+}cis;
 struct DropIndexSentence :public Sentence {
 	std::string indexName;
 	std::string tableName;
-};
+}dis;
 struct SelectRecordSentence :public Sentence {
 	std::string tableName;
 	std::vector<condition> conditions;
-};
+}srs;
 struct InsertRecordSentence :public Sentence {
 	std::string tableName;
-	anyVec values;
-};
+	std::vector<anyVec> values;
+}irs;
 struct DeleteRecordSentence :public Sentence {
 	std::string tableName;
 	std::vector<condition> conditions;
-};
+}drs;
 struct ExecFileSentence :public Sentence {
 	std::string filePath;
-};
+}efs;
 struct QuitSentence :public Sentence {
 
-};
+}qst;
 
 
 
 
-class judger {//用于判断一个where条件的函数对象，构造函数传入一个condition，可以直接调用。
+class judge {//用于判断一个where条件的函数对象，构造函数传入一个condition，可以直接调用。
 private:
 	catalog cata;
 	std::function<bool(std::any)> func;
 public:
 	catalog getCata();
-	judger(condition cond);
+	judge(condition cond);
 	bool operator()(std::any);
 };
