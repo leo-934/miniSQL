@@ -6,6 +6,7 @@ catalog judger::getCata()
 judger::judger(condition cond)
 {
 	cata = cond.cata;
+	c = cond;
 	if (cond.cata == catalog::INT) {
 		if (cond.comp == comparison::low)
 			func = [cond](std::any attrValue)->bool {return *attrValue._Cast<int>() < *cond.value._Cast<int>(); };
@@ -52,6 +53,10 @@ judger::judger(condition cond)
 
 bool judger::operator()(std::any attrValue)
 {
+	if (attrValue.type() ==typeid(int)) {
+		int a = *attrValue._Cast<int>();
+		int b = *c.value._Cast<int>();
+	}
 	return func(attrValue);
 }
 

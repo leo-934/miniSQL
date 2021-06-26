@@ -719,7 +719,7 @@ void BPT<T>::drop_tree(Tree node){
 	
 	delete node;
 	node_num--;
-	std::cout << "droptree succeed";
+	//std::cout << "droptree succeed";
 	return;
 }
 

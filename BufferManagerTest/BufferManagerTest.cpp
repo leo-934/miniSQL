@@ -11,11 +11,7 @@ namespace BufferManagerTest
 	{
 	public:
 		
-		TEST_METHOD(TestMethod1)
-		{
-			BufferManager test;
-			Assert::AreEqual(1, test.test());
-		}
+		
 		TEST_METHOD(DataBlockTest)
 		{
 			anyVec cata;

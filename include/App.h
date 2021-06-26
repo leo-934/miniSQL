@@ -5,9 +5,11 @@
 #include "CatalogManager.h"
 #include "Interpreter.h"
 #include "RecordManager.h"
+#include "Writer.h"
 
 class APP {
 private:
+	std::shared_ptr<Writer> writer;
 	std::shared_ptr<BufferManager> bufferManager;
 	std::shared_ptr<RecordManager> recordManager;
 	std::shared_ptr<IndexManager> indexManager;
@@ -25,4 +27,5 @@ public:
 	/// </summary>
 	/// <param name="parseResult">The parse result.</param>
 	void execSql(std::shared_ptr<Sentence> parseResult);
+	bool login();
 };

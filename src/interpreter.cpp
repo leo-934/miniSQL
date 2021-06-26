@@ -55,6 +55,11 @@ std::string Interpreter::getword(std::string s, int *i){
 	}
 }
 
+Interpreter::Interpreter(std::shared_ptr<CatalogManager> ptr)
+{
+	catalogManager = ptr;
+}
+
 std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 	std::string word;
 	int i = 0;
@@ -65,6 +70,7 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 		
 		if (strcmp(word.c_str(), "table") == 0) {
 			std::shared_ptr<cts> p=std::make_shared<cts>();
+			p->op = Operation::createTable;
 			std::string tablename = "";
 			std::string primarykey = "";
 			word = getword(s, &i);
@@ -118,6 +124,11 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 						p->uniqueKeys.push_back(attrName);
 						word = getword(s, &i);
 					}
+					if (strcmp(word.c_str(), "primary") == 0) {
+						p->primaryKey = attrName;
+						getword(s, &i);
+						word=getword(s, &i);
+					}
 					p->attrCata.insert(std::pair<std::string, catalog>(attrName, type));
 					p->originalAttr.push_back(attrName);
 
@@ -154,7 +165,8 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 		}
 		
 		else if (strcmp(word.c_str(), "index") == 0){
-			std::shared_ptr<cis> p = std::make_shared<cis>();;
+			std::shared_ptr<cis> p = std::make_shared<cis>();
+			p->op = Operation::createIndex;
 			std::string indexname = "";
 			std::string tablename = "";
 			std::string attrname = "";
@@ -196,7 +208,8 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 		
 		if (strcmp(word.c_str(), "table") == 0) {
 			if(!word.empty()){
-				std::shared_ptr<dts> p = std::make_shared<dts>();;
+				std::shared_ptr<dts> p = std::make_shared<dts>();
+				p->op = Operation::dropTable;
 				word = getword(s,&i);
 				p->tableName = word;
 				return std::dynamic_pointer_cast<struct Sentence>(p);
@@ -209,6 +222,7 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 		
 		else if (strcmp(word.c_str(), "index") == 0) {
 			std::shared_ptr<dis> p = std::make_shared<dis>();;
+			p->op = Operation::dropIndex;
 			std::string indexname = "";
 			std::string tablename = "";
 			word = getword(s,&i);
@@ -220,13 +234,13 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 				throw std::exception("Error");
 			}
 			word = getword(s,&i);
-			if (strcmp(word.c_str(), "on") != 0){
-				//error
-				throw std::exception("Error");
-			}
-			word = getword(s,&i);
-			if(!word.empty()) tablename = word;
-			p->tableName = tablename;
+			//if (strcmp(word.c_str(), "on") != 0){
+			//	//error
+			//	throw std::exception("Error");
+			//}
+			/*word = getword(s,&i);
+			if(!word.empty()) tablename = word;*/
+			/*p->tableName = tablename;*/
 			p->indexName = indexname;
 			return std::dynamic_pointer_cast<struct Sentence>(p);
 		}
@@ -239,9 +253,10 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 	
 		
 	else if(strcmp(word.c_str(), "select") == 0) {
-		std::shared_ptr<srs> p = std::make_shared<srs>();;
+		std::shared_ptr<srs> p = std::make_shared<srs>();
+		p->op = Operation::selectRecord;
 		std::string tablename = "";
-		struct condition* c = (struct condition*)malloc(sizeof(struct condition));
+		struct condition* c = new condition;
 		word = getword(s,&i);
 		if (strcmp(word.c_str(), "*") != 0) {
 			while (strcmp(word.c_str(), "from") != 0) {
@@ -268,6 +283,8 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 			if (p->conditions.size() == 0) {
 				p->tableName = tablename;
 				p->conditions.resize(0);
+
+				return std::dynamic_pointer_cast<struct Sentence>(p);
 			}
 			else {
 				p->tableName = tablename;
@@ -276,7 +293,7 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 		}
 		else if (strcmp(word.c_str(), "where") == 0) {
 			std::string attrname = "";
-			std::string value = "";
+			std::any value = "";
 			comparison comp;
 			word = getword(s,&i);
 			while(1) {
@@ -297,11 +314,22 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 					comp = comparison::notEqual;
 				else throw std::exception("Error");
 				word = getword(s,&i);
+				auto cata = catalogManager->getCataByAttrName(tablename, attrname);
+				if (cata == catalog::INT) {
+					value = std::stoi(word);
+				}
+				else if (cata == catalog::FLOAT) {
+					value = std::stof(word);
+				}
+				else {
+					value = word;
+				}
 				if(word.empty()) throw std::exception("Error");
 				word = getword(s,&i);
-				struct condition* c = (struct condition*)malloc(sizeof(struct condition));
+				struct condition* c = new condition;
 				c->attrName = attrname;
 				c->comp = comp;
+				c->cata = cata;
 				c->value = value;
 				p->tableName = tablename;
 				p->conditions.push_back(*c); 
@@ -312,11 +340,12 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 			}
 			return std::dynamic_pointer_cast<struct Sentence>(p);
 		}
-		throw std::exception("Error");
+		
 	}
 	
 	else if(strcmp(word.c_str(), "delete") == 0) {
-		std::shared_ptr<drs> p = std::make_shared<drs>();;
+		std::shared_ptr<drs> p = std::make_shared<drs>();
+		p->op = Operation::deleteRecord;
 		std::string tablename = "";
 		word = getword(s,&i);
 		if (strcmp(word.c_str(), "from") != 0) {
@@ -340,7 +369,7 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 		
 		else if (strcmp(word.c_str(), "where") == 0) {
 			std::string attrname = "";
-			std::string value = "";
+			std::any value = "";
 			comparison comp;
 			word = getword(s,&i);
 			while(1) {
@@ -360,20 +389,31 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 					else if (strcmp(word.c_str(), "<>") == 0)
 						comp = comparison::notEqual;
 					else throw std::exception("Error");
+
 					word = getword(s,&i);
 					if (word.empty()) throw std::exception("Error");
-					value = word;
+					auto cata = catalogManager->getCataByAttrName(tablename, attrname);
+					if (cata == catalog::INT) {
+						value = std::stoi(word);
+					}
+					else if (cata == catalog::FLOAT) {
+						value = std::stof(word);
+					}
+					else {
+						value = word;
+					}
 					word = getword(s,&i);
-					struct condition* c = (struct condition*)malloc(sizeof(struct condition));
+					struct condition* c = new condition;
 					c->attrName = attrname;
 					c->comp = comp;
+					c->cata = cata;
 					c->value = value;
 					p->tableName = tablename;
 					p->conditions.push_back(*c);
-					if(word.empty()) break;
-					if (strcmp(word.c_str(),"and") != 0)
+					if (word.empty()) break;
+					if (strcmp(word.c_str(), "and") != 0)
 						throw std::exception("Error");
-					word = getword(s,&i);
+					word = getword(s, &i);
 			}
 			return std::dynamic_pointer_cast<struct Sentence>(p);
 		}
@@ -381,7 +421,8 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 	}
 	
 	else if (strcmp(word.c_str(), "insert") == 0) {
-		std::shared_ptr<irs> p = std::make_shared<irs>();;
+		std::shared_ptr<irs> p = std::make_shared<irs>();
+		p->op = Operation::insertRecord;
 		std::string tablename = "";
 		word = getword(s,&i);
 			if (strcmp(word.c_str(), "into") != 0) throw std::exception("Error");
@@ -393,8 +434,20 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 			word = getword(s,&i);
 			if (strcmp(word.c_str(), "(") != 0) throw std::exception("Error");
 			word = getword(s,&i);
+			int j = 0;
 			while (!word.empty() && strcmp(word.c_str(), ")") != 0){
-				p->values.push_back(word);
+				auto attrs = catalogManager->getOriginalAttrNames(tablename);
+				auto cata = catalogManager->getCataByAttrName(tablename, attrs[j]);
+				j++;
+				if (cata == catalog::INT) {
+					p->values.push_back(std::stoi(word));
+				}
+				else if (cata == catalog::FLOAT) {
+					p->values.push_back(std::stof(word));
+				}
+				else {
+					p->values.push_back(word);
+				}
 				word = getword(s,&i);
 				if (strcmp(word.c_str(), ",") == 0) word = getword(s,&i);
 			}
@@ -408,7 +461,8 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 	}
 	
 	else if (strcmp(word.c_str(), "execfile") == 0) {
-		std::shared_ptr<efs> p = std::make_shared<efs>();;
+		std::shared_ptr<efs> p = std::make_shared<efs>();
+		p->op = Operation::execFile;
 		p->filePath = getword(s,&i);
 		return std::dynamic_pointer_cast<struct Sentence>(p);
 	}

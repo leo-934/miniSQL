@@ -14,8 +14,8 @@ const int blockHeadSpace = 4;
 const int floatSpace = 4;
 const int intSpace = 4;
 const int charSpace = 1;
-const int recordValid = 1;
-const int recordInvalid = 0;
+const char recordValid = 1;
+const char recordInvalid = 0;
 enum class Operation {//代表一个语句的操作类型
 	createTable,
 	dropTable,
@@ -101,6 +101,7 @@ typedef struct QuitSentence :public Sentence {
 class judger {//用于判断一个where条件的函数对象，构造函数传入一个condition，可以直接调用。
 private:
 	catalog cata;
+	condition c;
 	std::function<bool(std::any)> func;
 public:
 	catalog getCata();

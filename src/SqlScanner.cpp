@@ -17,16 +17,24 @@ SqlScanner::SqlScanner(std::string filename)
 std::string SqlScanner::getSqlSentence()
 {
 	std::string sent;
+	
 	if (isFromFile) {
 		char c;
 		fs.get(c);
+		while (c == '\n' || c == ' ') {
+			fs.get(c);
+			if (!fs) return std::string("");
+		}
 		while (!fs.eof() && c != ';') {
 			sent.push_back(c);
 			fs.get(c);
-			int a = fs.tellg();
 		}
-		if (fs.eof()) return std::string("");
-		else return sent;
+		if (fs.eof()) {
+			return std::string("");
+		}
+		else {
+			return sent;
+		}
 	}
 	else {
 		char c = getchar();

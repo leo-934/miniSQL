@@ -9,8 +9,8 @@
 #include "CatalogManager.h"
 #include "Def.h"
 /// <summary>
-/// ·µ»ØÖµÎªvectorµÄº¯Êı£¬Èç¹ûÃ»ÓĞÊ²Ã´¿ÉÒÔ·µ»ØµÄ£¬¾Í·µ»ØÒ»¸ösizeÎª0µÄvector
-/// ·µ»ØÖµÎªstringµÄº¯Êı£¬Èç¹ûÃ»ÓĞÊ²Ã´¿ÉÒÔ·µ»ØµÄ£¬¾Í·µ»Ø¿Õ×Ö·û´®""¡£
+/// è¿”å›å€¼ä¸ºvectorçš„å‡½æ•°ï¼Œå¦‚æœæ²¡æœ‰ä»€ä¹ˆå¯ä»¥è¿”å›çš„ï¼Œå°±è¿”å›ä¸€ä¸ªsizeä¸º0çš„vector
+/// è¿”å›å€¼ä¸ºstringçš„å‡½æ•°ï¼Œå¦‚æœæ²¡æœ‰ä»€ä¹ˆå¯ä»¥è¿”å›çš„ï¼Œå°±è¿”å›ç©ºå­—ç¬¦ä¸²""ã€‚
 /// </summary>
 class IndexManager {
 private:
@@ -33,29 +33,29 @@ public:
 	int test();
 
 	/// <summary>
-	/// ¿ªÆôÊı¾İ¿âÊ±µ÷ÓÃ£¬½«ËùÓĞindex¶ÁÈëÎÄ¼ş
+	/// å¼€å¯æ•°æ®åº“æ—¶è°ƒç”¨ï¼Œå°†æ‰€æœ‰indexè¯»å…¥æ–‡ä»¶
 	/// </summary>
 	IndexManager(std::shared_ptr<CatalogManager> _catalogManager);
 	/// <summary>
-	///	¹Ø±ÕÊı¾İ¿âÊ±ºòµ÷ÓÃ£¬½«ËùÓĞindexĞ´ÈëÎÄ¼ş
+	///	å…³é—­æ•°æ®åº“æ—¶å€™è°ƒç”¨ï¼Œå°†æ‰€æœ‰indexå†™å…¥æ–‡ä»¶
 	/// </summary>
 	void close();
 
 	/// <summary>
-	/// ÎªÖ¸¶¨±íµÄÖ¸¶¨ÊôĞÔ´´½¨Ò»¸öÃûÎªindexNameµÄË÷Òı¡£ÈôÕâ¸ö±íÒÑ¾­ÓĞË÷Òı£¬ÔòÎª¾Û¼¯Ë÷Òı£¬ÈôÃ»ÓĞ£¬ÔòÎª¸¨ÖúË÷Òı¡£
+	/// ä¸ºæŒ‡å®šè¡¨çš„æŒ‡å®šå±æ€§åˆ›å»ºä¸€ä¸ªåä¸ºindexNameçš„ç´¢å¼•ã€‚è‹¥è¿™ä¸ªè¡¨å·²ç»æœ‰ç´¢å¼•ï¼Œåˆ™ä¸ºèšé›†ç´¢å¼•ï¼Œè‹¥æ²¡æœ‰ï¼Œåˆ™ä¸ºè¾…åŠ©ç´¢å¼•ã€‚
 	/// </summary>
 	/// <param name="indexName">Name of the index.</param>
 	/// <param name="tableName">Name of the table.</param>
 	/// <param name="attrName">Name of the attribute.</param>
     void* createIndex(std::string indexName, std::string tableName, std::string attrName);
 	/// <summary>
-	/// É¾³ıµôÖ¸¶¨±íµÄ½Ğ×öÖ¸¶¨Ë÷ÒıÃûµÄË÷Òı
+	/// åˆ é™¤æ‰æŒ‡å®šè¡¨çš„å«åšæŒ‡å®šç´¢å¼•åçš„ç´¢å¼•
 	/// </summary>
 	/// <param name="indexName">Name of the index.</param>
 	/// <param name="tableName">Name of the table.</param>
-	void dropIndex(std::string indexName, std::string tableName);
+	void dropIndex(std::string indexName);
 	/// <summary>
-	/// É¾³ıµôÖ¸¶¨±íµÄËùÓĞË÷Òı
+	/// åˆ é™¤æ‰æŒ‡å®šè¡¨çš„æ‰€æœ‰ç´¢å¼•
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
 	void dropAllIndex(std::string tableName);

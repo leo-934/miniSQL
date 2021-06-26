@@ -2,14 +2,16 @@
 #include<string>
 #include <memory>
 #include "BufferManager.h"
+#include "IndexManager.h"
 class RecordManager {
 private:
 	std::shared_ptr<BufferManager> bufferManager;
 	std::shared_ptr<CatalogManager> catalogManager;
+	std::shared_ptr<IndexManager> indexManager;
 public:
 	int test();
 
-	RecordManager(std::shared_ptr<BufferManager> ptr1, std::shared_ptr<CatalogManager> ptr2);
+	RecordManager(std::shared_ptr<BufferManager> ptr1, std::shared_ptr<CatalogManager> ptr2, std::shared_ptr<IndexManager> ptr3);
 	/// <summary>
 	/// Inserts the record to table.
 	/// </summary>
@@ -34,4 +36,6 @@ public:
 	/// <param name="conds">The conds.</param>
 	/// <returns></returns>
 	std::vector<anyVec> selectRecordsByAddressAndCondition(std::string tableName, std::vector<int64> addresses, std::vector<condition> conds);
+
+	void addPastRecordToIndex(std::string tableName);
 };

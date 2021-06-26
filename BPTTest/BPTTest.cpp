@@ -41,9 +41,9 @@ int main() {
 	indextest.removeIndexByAddress("b", a);
 	//indextest.insertToIndex("a", "b", 3, 8);
 	a=indextest.selectIndexsByCondition("b", "a", cond);
-	indextest.dropIndex("a", "b");
+	indextest.dropIndex("a");
 	indextest.selectIndexsByCondition("b", "a", cond);
-	indextest.dropIndex("d", "b");
+	indextest.dropIndex("d");
 	indextest.close();
 
 	system("pause");

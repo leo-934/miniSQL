@@ -11,7 +11,7 @@ int CatalogManager::test()
 CatalogManager::CatalogManager()//待测试
 {
 	std::ifstream fs;
-	fs.open("catas.bin", std::fstream::in);
+	fs.open("catas.bin", std::ifstream::in);
 	if (!fs) {
 		//
 		return;
@@ -78,12 +78,28 @@ CatalogManager::CatalogManager()//待测试
 		}
 		uniqueKeys.insert(std::map<std::string, std::vector<std::string> >::value_type(tableName, uKeys));
 	}
+
+	int originalAttrNamesSize;
+	fs >> originalAttrNamesSize;
+	for (int j = 0; j < originalAttrNamesSize; ++j) {
+		std::string tableName;
+		fs >> tableName;
+		int attrNum;
+		fs >> attrNum;
+		std::vector<std::string> attrs;
+		for (int i = 0; i < attrNum; ++i) {
+			std::string attrName;
+			fs >> attrName;
+			attrs.push_back(attrName);
+		}
+		originalAttrNames.insert(std::map<std::string, std::vector<std::string> >::value_type(tableName, attrs));
+	}
 	return;
 }
 
 void CatalogManager::close()//待测试
 {
-	std::ofstream fs("catas.bin", std::fstream::out);
+	std::ofstream fs("catas.bin", std::ofstream::out);
 	//write catas
 	fs << catas.size() << " ";
 	for (auto i : catas) {
@@ -107,7 +123,14 @@ void CatalogManager::close()//待测试
 	}
 	//write uniqueKeys
 	fs << uniqueKeys.size() << " ";
-	for (auto i : primaryKeys) {
+	for (auto i : uniqueKeys) {
+		fs << i.first << " " << i.second.size() << " ";
+		for (auto j : i.second) {
+			fs << j << " ";
+		}
+	}
+	fs << originalAttrNames.size() << " ";
+	for (auto i : originalAttrNames) {
 		fs << i.first << " " << i.second.size() << " ";
 		for (auto j : i.second) {
 			fs << j << " ";
@@ -142,10 +165,18 @@ catalog CatalogManager::getCataByAttrName(std::string tableName, std::string att
 anyVec CatalogManager::getCataInAnyVec(std::string tableName)
 {
 	anyVec res;
-	for (auto i : catas[tableName]) {
+	for (auto j : originalAttrNames[tableName]) {
+		for (auto i : catas[tableName]) {
+			if (i.first == j) {
+				res.push_back(static_cast<catalog>(i.second));
+				if (i.second == catalog::CHAR) res.push_back(static_cast<int>(attrLenForChars[tableName][i.first]));
+			}
+		}
+	}
+	/*for (auto i : catas[tableName]) {
 		res.push_back(static_cast<catalog>(i.second));
 		if (i.second == catalog::CHAR) res.push_back(static_cast<int>(attrLenForChars[tableName][i.first]));
-	}
+	}*/
 	return res;
 }
 
@@ -162,6 +193,7 @@ std::vector<std::string> CatalogManager::getAllAttrByTableName(std::string table
 	std::vector<std::string> res;
 	if(catas.find(tableName)==catas.end()) throw std::exception("no this table");
 	for (auto i : catas[tableName]) res.push_back(i.first);
+	return res;
 }
 
 void CatalogManager::createTable(CreateTableSentence sent)

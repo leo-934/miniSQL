@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <fstream>
+#include "Def.h"
 class SqlScanner {
 private:
 	bool isFromFile;
