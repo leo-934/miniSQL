@@ -1,30 +1,31 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <fstream>
+#include <exception>
 #include <map>
-#include "bplustree.h"
+#include <any>
 #include "indexinfo.h"
-using namespace std;
+#include "CatalogManager.h"
+#include "Def.h"
 /// <summary>
-/// è¿”å›å€¼ä¸ºvectorçš„å‡½æ•°ï¼Œå¦‚æœæ²¡æœ‰ä»€ä¹ˆå¯ä»¥è¿”å›çš„ï¼Œå°±è¿”å›ä¸€ä¸ªsizeä¸º0çš„vector
-/// è¿”å›å€¼ä¸ºstringçš„å‡½æ•°ï¼Œå¦‚æœæ²¡æœ‰ä»€ä¹ˆå¯ä»¥è¿”å›çš„ï¼Œå°±è¿”å›ç©ºå­—ç¬¦ä¸²""ã€‚
+/// ·µ»ØÖµÎªvectorµÄº¯Êı£¬Èç¹ûÃ»ÓĞÊ²Ã´¿ÉÒÔ·µ»ØµÄ£¬¾Í·µ»ØÒ»¸ösizeÎª0µÄvector
+/// ·µ»ØÖµÎªstringµÄº¯Êı£¬Èç¹ûÃ»ÓĞÊ²Ã´¿ÉÒÔ·µ»ØµÄ£¬¾Í·µ»Ø¿Õ×Ö·û´®""¡£
 /// </summary>
 class IndexManager {
-public:
+private:
 	
-	int static const FLOAT = 0;
-	int static const INT = -1;
-	
-	struct keytmp {
-		int inttmp;
-		float floattmp;
-		string stringtmp;
-	}tmp;
-	
-	map<int, IndexInfo*> indexmap;
-	
-	int getdegree(int type);
-	int getkeysize(int type);
+	std::map<int, IndexInfo*> indexmap;
+	std::shared_ptr<CatalogManager> catalogManager;
+	int getdegree(catalog type);
+	int getkeysize(catalog type);
+
+
+	void writeintoBuffer();
+
+	void readfromBuffer();
+
+	void* getindex(std::string tableName, std::string indexName);
 		
 public:
 
@@ -32,51 +33,38 @@ public:
 	int test();
 
 	/// <summary>
-	/// å¼€å¯æ•°æ®åº“æ—¶è°ƒç”¨ï¼Œå°†æ‰€æœ‰indexè¯»å…¥
+	/// ¿ªÆôÊı¾İ¿âÊ±µ÷ÓÃ£¬½«ËùÓĞindex¶ÁÈëÎÄ¼ş
 	/// </summary>
-	IndexManager(std::string tableName);
+	IndexManager(std::shared_ptr<CatalogManager> _catalogManager);
 	/// <summary>
-	///	å…³é—­æ•°æ®åº“æ—¶å€™è°ƒç”¨ï¼Œå°†æ‰€æœ‰indexå†™å…¥æ–‡ä»¶
+	///	¹Ø±ÕÊı¾İ¿âÊ±ºòµ÷ÓÃ£¬½«ËùÓĞindexĞ´ÈëÎÄ¼ş
 	/// </summary>
 	void close();
-	
-	int writeintoBuffer();
-	
-	void setkey(int type, string key);
-	
-	int getkeysize(int type);
-	
-	void* getindex(string indexName);
 
 	/// <summary>
-	/// ä¸ºæŒ‡å®šè¡¨çš„æŒ‡å®šå±æ€§åˆ›å»ºä¸€ä¸ªåä¸ºindexNameçš„ç´¢å¼•ã€‚è‹¥è¿™ä¸ªè¡¨å·²ç»æœ‰ç´¢å¼•ï¼Œåˆ™ä¸ºèšé›†ç´¢å¼•ï¼Œè‹¥æ²¡æœ‰ï¼Œåˆ™ä¸ºè¾…åŠ©ç´¢å¼•ã€‚
+	/// ÎªÖ¸¶¨±íµÄÖ¸¶¨ÊôĞÔ´´½¨Ò»¸öÃûÎªindexNameµÄË÷Òı¡£ÈôÕâ¸ö±íÒÑ¾­ÓĞË÷Òı£¬ÔòÎª¾Û¼¯Ë÷Òı£¬ÈôÃ»ÓĞ£¬ÔòÎª¸¨ÖúË÷Òı¡£
 	/// </summary>
 	/// <param name="indexName">Name of the index.</param>
 	/// <param name="tableName">Name of the table.</param>
 	/// <param name="attrName">Name of the attribute.</param>
-    void* createIndex(std::string indexName, std::string tableName, std::string attrName, int type);
+    void* createIndex(std::string indexName, std::string tableName, std::string attrName);
 	/// <summary>
-	/// åˆ é™¤æ‰æŒ‡å®šè¡¨çš„å«åšæŒ‡å®šç´¢å¼•åçš„ç´¢å¼•
+	/// É¾³ıµôÖ¸¶¨±íµÄ½Ğ×öÖ¸¶¨Ë÷ÒıÃûµÄË÷Òı
 	/// </summary>
 	/// <param name="indexName">Name of the index.</param>
 	/// <param name="tableName">Name of the table.</param>
-	void dropIndex(std::string indexName);
+	void dropIndex(std::string indexName, std::string tableName);
 	/// <summary>
-	/// åˆ é™¤æ‰æŒ‡å®šè¡¨çš„æ‰€æœ‰ç´¢å¼•
+	/// É¾³ıµôÖ¸¶¨±íµÄËùÓĞË÷Òı
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
-	void dropAllIndex();
+	void dropAllIndex(std::string tableName);
 
-	void insertToIndex(std::string indexName,std::string key, int64 fileAddresses, int type);
+	void insertToIndex(std::string indexName, std::string tableName, std::any key, int64 value);
 	
-	std::vector<int64> selectIndexsByCondition(std::string TableName, std::string indexName, std::vector<condition> cond);
+	std::vector<int64> selectIndexsByCondition(std::string tableName, std::string indexName, std::vector<condition> cond);
 
-	/// <summary>
-	/// Removes all index by address.
-	/// </summary>
-	/// <param name="tableName">Name of the table.</param>
-	/// <param name="addresses">The addresses.</param>
-	void removeAllIndexByAddress(std::string tableName, std::vector<int64> addresses);
+	void removeIndexByAddress(std::string tableName, std::vector<int64> addresses);
 	/// <summary>
 	/// Determines whether [has clustered index] [the specified table name].
 	/// </summary>

@@ -1,18 +1,5 @@
 #include <fstream>
 #include "RecordManager.h"
-
-bool RecordManager::judgeCondition(std::string tableName, anyVec record, condition cond)
-{
-	std::string attrName = cond.attrName;
-	auto cataVec = catalogManager->getAllAttrByTableName(tableName);
-	int index = 0;
-	for (; index < cataVec.size(); index++) {
-		if (cataVec[index] == attrName) break;
-	}
-	judger myjudger(cond);
-	return myjudger(record[index]);
-}
-
 int RecordManager::test()
 {
 	return 1;
@@ -22,47 +9,54 @@ RecordManager::RecordManager(std::shared_ptr<BufferManager> ptr1, std::shared_pt
 {
 	bufferManager = ptr1;
 	catalogManager = ptr2;
-}	
+}
+
+
 
 int64 RecordManager::insertRecordToTable(std::string tableName, anyVec values)
 {
-	bufferManager->insertRecordToTable(tableName, values);
-	
+	int64 res=bufferManager->insertRecordToTable(tableName, values);
+	return res;
 }
 
 std::vector<int64> RecordManager::removeRecordsByAddressAndCondition(std::string tableName, std::vector<int64> addresses, std::vector<condition> conds)
 {
 	std::vector<int64> res;
-	for (auto i : addresses) {
-		auto record=bufferManager->getRecordByAddress(tableName,i);
-		bool isSatisfied = true;
-		for (auto j : conds) {
-			if (judgeCondition(tableName, record, j) == false) {
-				isSatisfied = false;
-				break;
+	for (auto addr : addresses) {
+		auto record = bufferManager->getRecordByAddress(tableName, addr);
+		int flag = 1;
+		for (auto c : conds) {
+			judger myjudger(c);
+			int j = 0;
+			for (; j < record.size(); j++) {
+				if ((catalogManager->getOriginalAttrNames(tableName))[j] == c.attrName) break;
 			}
+			if (myjudger(record[j]) == false) flag = 0;
 		}
-		if (isSatisfied) res.push_back(i);
+		if (flag) {
+			res.push_back(addr);
+			bufferManager->deleteRecordByAddress(tableName, addr);
+		}
 	}
-	for (auto i : res)
-		bufferManager->deleteRecordByAddress(tableName, i);
-
 	return res;
 }
 
 std::vector<anyVec> RecordManager::selectRecordsByAddressAndCondition(std::string tableName, std::vector<int64> addresses, std::vector<condition> conds)
 {
 	std::vector<anyVec> res;
-	for (auto i : addresses) {
-		auto record = bufferManager->getRecordByAddress(tableName, i);
-		bool isSatisfied = true;
-		for (auto j : conds) {
-			if (judgeCondition(tableName, record, j) == false) {
-				isSatisfied = false;
-				break;
+	for (auto addr : addresses) {
+		auto record = bufferManager->getRecordByAddress(tableName, addr);
+		int flag = 1;
+		for (auto c : conds) {
+			judger myjudger(c);
+			int j = 0;
+			for (; j < record.size(); j++) {
+				if ((catalogManager->getOriginalAttrNames(tableName))[j] == c.attrName) break;
 			}
-		}
-		if (isSatisfied) res.push_back(record);
+			if (myjudger(record[j]) == false) flag = 0;
+		} 
+		if (flag) res.push_back(record);
+		
 	}
 	return res;
 }

@@ -29,7 +29,7 @@ enum class Operation {//代表一个语句的操作类型
 };
 
 
-enum class comparison {//代表一个where条件的比较类型
+enum class comparison {
 	low,
 	lowOrEqual,
 	equal,
@@ -53,58 +53,57 @@ struct condition {//代表一个where条件er
 //这些struct用来作为interpreter的parseSql函数的返回值
 struct Sentence {
 	Operation op;
-	virtual Operation getOp() {
-		return op;
-	}
+	virtual Operation getOp();
 };
-struct CreateTableSentence :public Sentence{
+typedef struct CreateTableSentence :public Sentence{
 	int attrNum;
 	std::string tableName;
+	std::vector<std::string> originalAttr;
 	std::map<std::string,catalog> attrCata;
 	std::map<std::string, int> attrLenForChar;
 	std::string primaryKey;//若没有，置为空字符串
 	std::vector<std::string> uniqueKeys;//若没有，size置为0
 }cts;
-struct DropTableSentence :public Sentence {
+typedef struct DropTableSentence :public Sentence {
 	std::string tableName;
 }dts;
-struct CreateIndexSentence :public Sentence {
+typedef struct CreateIndexSentence :public Sentence {
 	std::string indexName;
 	std::string tableName;
 	std::string attrName;
 }cis;
-struct DropIndexSentence :public Sentence {
+typedef struct DropIndexSentence :public Sentence {
 	std::string indexName;
 	std::string tableName;
 }dis;
-struct SelectRecordSentence :public Sentence {
+typedef struct SelectRecordSentence :public Sentence {
 	std::string tableName;
 	std::vector<condition> conditions;
 }srs;
-struct InsertRecordSentence :public Sentence {
+typedef struct InsertRecordSentence :public Sentence {
 	std::string tableName;
-	std::vector<anyVec> values;
+	std::vector<std::any> values;
 }irs;
-struct DeleteRecordSentence :public Sentence {
+typedef struct DeleteRecordSentence :public Sentence {
 	std::string tableName;
 	std::vector<condition> conditions;
 }drs;
-struct ExecFileSentence :public Sentence {
+typedef struct ExecFileSentence :public Sentence {
 	std::string filePath;
 }efs;
-struct QuitSentence :public Sentence {
+typedef struct QuitSentence :public Sentence {
 
-}qst;
-
-
+}qs;
 
 
-class judge {//用于判断一个where条件的函数对象，构造函数传入一个condition，可以直接调用。
+
+
+class judger {//用于判断一个where条件的函数对象，构造函数传入一个condition，可以直接调用。
 private:
 	catalog cata;
 	std::function<bool(std::any)> func;
 public:
 	catalog getCata();
-	judge(condition cond);
+	judger(condition cond);
 	bool operator()(std::any);
 };

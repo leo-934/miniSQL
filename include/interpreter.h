@@ -1,14 +1,20 @@
 #pragma once
-#include "def.h"
+#include "Def.h"
 #include <iostream>
+#include <map> 
 #include <vector>
 #include <string>
 #include <memory>
-#include <sstream> 
-using namespace std;
+#include <sstream>
+#include <exception>
+#include <fstream>
 
 class Interpreter {
-public:
+private:
 	std::string getword(std::string s, int *i);
-	std::shared_ptr<Sentence> parseSql(std::string s);			
+	std::string getlowerword(std::string s);
+public:
+	std::shared_ptr<Sentence> parseSql(std::string s);	
 };
+
+class SyntaxException{};

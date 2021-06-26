@@ -1,14 +1,15 @@
 #pragma once
 #include <string>
-using namespace std;
+#include "Def.h"
+#include "bplustree.h"
 
 struct IndexInfo
 {
 public:
-	string indexName;
-	string tableName;
-	string attrname;
-	int type;//-1:int 0:float 1-255:length of str
+	std::string indexName;
+	std::string tableName;
+	std::string attrName;
+	catalog type = catalog::INT;
 	void* Tree;
 	bool ifclustered = true;
 };

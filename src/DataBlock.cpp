@@ -3,6 +3,10 @@
 #include "DataBlock.h"
 #pragma once
 
+DataBlock::DataBlock()
+{
+}
+
 DataBlock::DataBlock(anyVec _cata)
 {
 	//recordNum = 0;

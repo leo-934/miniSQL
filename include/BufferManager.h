@@ -5,32 +5,21 @@
 #include <memory>
 #include "DataBlock.h"
 #include "CatalogManager.h"
-#include "Def.h"
 class BufferManager {
 private:
-	const int bufferMaxSize = 64;
-
 	std::shared_ptr<CatalogManager> catalogManager;
+
 	struct blockLabel{
 		std::string tableName;
 		int64 blockSerial;//从0开始
-		int64 useOrder;
-		blockLabel(std::string _tableName, int64 _blockSerial, int64 _useOrder);
-		bool operator <(blockLabel x) {
-			if (this->tableName < x.tableName) return true;
-			else if (this->tableName > x.tableName) return false;
-			else return this->blockSerial < x.blockSerial;
-		}
+		bool operator <(const blockLabel& x) const;
 	};
-	static int64 nextOrder;
-
 	std::map<blockLabel, DataBlock> buffer;
 	std::map<std::string, int64> blockNum;
 	std::map<std::string, int64> recordNum;
 	std::set<std::string> tableNames;
 	int64 getBlockNum(std::string tableName);
 	
-	void removeLRUBlock();
 	/// <summary>
 	/// 代理引用buffer,通过修改这个函数可以管理缓冲区
 	/// </summary>
@@ -54,7 +43,6 @@ public:
 	/// </summary>
 	/// <param name="ptr">The PTR.</param>
 	BufferManager(std::shared_ptr<CatalogManager> ptr);
-	void close();
 	/// <summary>
 	/// Gets the record number.
 	/// </summary>
@@ -80,7 +68,7 @@ public:
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
 	/// <param name="addresses">The addresses.</param>
-	void deleteRecordByAddress(std::string tableName, int64 address);
+	void deleteRecordByAddress(std::string tableName, int64 addresses);
 	/// <summary>
 	/// Creates the table.
 	/// </summary>

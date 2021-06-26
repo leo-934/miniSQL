@@ -3,7 +3,6 @@
 #include "CppUnitTest.h"
 #include "BufferManager.h"
 #include "DataBlock.h"
-#include "Def.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace BufferManagerTest

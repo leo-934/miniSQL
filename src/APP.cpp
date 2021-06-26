@@ -5,13 +5,13 @@ APP::APP()
 	catalogManager = std::make_shared<CatalogManager>();
 	bufferManager = std::make_shared<BufferManager>(catalogManager);
 	recordManager = std::make_shared<RecordManager>(bufferManager,catalogManager);
-	indexManager = std::make_shared<IndexManager>();
+	indexManager = std::make_shared<IndexManager>(catalogManager);
 	interpreter = std::make_shared<Interpreter>();
 }
 
 void APP::run()
 {
-	SqlScanner in = SqlScanner();
+	SqlScanner in = SqlScanner("./tests/index-create-delete-0.sql");
 	while (1) {
 			auto parseResult = interpreter->parseSql(in.getSqlSentence());
 			execSql(parseResult);
@@ -72,7 +72,16 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 	else if (parseResult->op == Operation::insertRecord) {
 		auto res = std::dynamic_pointer_cast<InsertRecordSentence>(parseResult);
 		auto address=recordManager->insertRecordToTable(res->tableName, res->values);
-		indexManager->insertToIndex(res->tableName, res->values, address);
+		auto indexes = indexManager->getAllIndex(res->tableName);
+		for (auto i : indexes) {
+			auto attrNameForThisIndex = indexManager->getAttrNameByIndexName(i, res->tableName);
+			auto originalAttrNames = catalogManager->getOriginalAttrNames(res->tableName);
+			int j = 0;
+			for (; j < originalAttrNames.size();j++) {
+				if (originalAttrNames[j] == attrNameForThisIndex) break;
+			}
+			indexManager->insertToIndex(i, res->tableName, res->values[j],address);
+		}
 
 	}
 	else if (parseResult->op == Operation::deleteRecord) {
@@ -97,7 +106,7 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 						}
 						auto addresses = indexManager->selectIndexsByCondition(res->tableName, indexManager->getIndexNameByAttrName(i, res->tableName), conditionsForIndex);
 						auto actualRemovedAddresses = recordManager->removeRecordsByAddressAndCondition(res->tableName, addresses, conditionsNotForIndex);
-						indexManager->removeAllIndexByAddress(res->tableName, actualRemovedAddresses);
+						indexManager->removeIndexByAddress(res->tableName, actualRemovedAddresses);
 						//writer
 						return;
 					}

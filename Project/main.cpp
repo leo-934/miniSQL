@@ -4,14 +4,13 @@
 #include <memory>
 #include <string>
 #include <any>
-
+#include "APP.h"
 #include "BufferManager.h"
-#include "def.h"
+#include "Def.h"
+#include <fstream>
 int main()
 {
-    Operation a = Operation::selectRecord;
-    std::any b;
-    b = Operation::selectRecord;
-    std::cout << (Operation::selectRecord ==(*b._Cast<Operation>()));
+    APP app;
+    app.run();
     return 0;
 }

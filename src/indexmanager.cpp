@@ -1,188 +1,282 @@
 #include "IndexManager.h"
-
+#include <cstdlib>
 int IndexManager::test()
 {
 	return 1;
 }
 
-IndexManager::IndexManager()
+IndexManager::IndexManager(std::shared_ptr<CatalogManager> _catalogManager)
 {
-	map<int, IndexInfo*>::iterator iter = indexmap.begin();
-	for (; iter != indexmap.end(); it++) {
+	catalogManager = _catalogManager;
+	readfromBuffer();
+	std::map<int, IndexInfo*>::iterator iter = indexmap.begin();
+	for (; iter != indexmap.end(); iter++) {
 		createIndex(iter->second->indexName, iter->second->tableName, 
-					iter->second->attrName, iter->second->type);
+					iter->second->attrName);
 	}
 }
 
 void IndexManager::close()
 {
 	 writeintoBuffer();
-	 map<int, IndexInfo*>::iterator iter = indexmap.begin();
-	 for (; iter != indexmap.end(); it++) {
-	 	if (iter->second->type == INT) {
+	 std::map<int, IndexInfo*>::iterator iter = indexmap.begin();
+	 for (; iter != indexmap.end(); iter++) {
+	 	if (iter->second->type == catalog::INT) {
 	 		BPT<int>* sptr = (BPT<int>*)iter->second->Tree;
 	 	}
 	 	
-	 	else if (iter->second->type == FLOAT) {
+	 	else if (iter->second->type == catalog::FLOAT) {
 	 		BPT<float>* sptr = (BPT<float>*)iter->second->Tree;
 	 	}
 	 	
-	 	else (iter->second->type == INT) {
-	 		BPT<string>* sptr = (BPT<string>*)iter->second->Tree;
+	 	else if (iter->second->type == catalog::INT) {
+	 		BPT<std::string>* sptr = (BPT<std::string>*)iter->second->Tree;
 	 	}
 	 	
-	 	free (iter->second)
+		free(iter->second);
 	 }
 }
 
-int IndexManager::writeintoBuffer(){
-	
+void IndexManager::writeintoBuffer(){
+	std::ofstream fs("indexes.bin", std::fstream::out);
+	catalog type;
+	// write indexmap
+	for (auto i : indexmap) {
+		fs << i.first << " " ;
+		fs << i.second->indexName << " ";
+		fs << i.second->tableName << " ";
+		fs << i.second->attrName << " ";
+	}
+	// write key&value
+	for (auto i : indexmap) {
+		type = i.second->type;
+		if (type == catalog::INT) {
+			BPT<int>* t = (BPT<int>*)getindex(i.second->tableName, i.second->indexName);
+			std::map<int, int64> keyvalpair;
+			keyvalpair = t->getkeyvalpair();
+			for (auto j : keyvalpair) {
+				fs << j.first << " ";
+				fs << j.second << " ";
+			}
+		}
+
+		else if (type == catalog::FLOAT) {
+			BPT<float>* t = (BPT<float>*)getindex(i.second->tableName, i.second->indexName);
+			std::map<float, int64> keyvalpair;
+			keyvalpair = t->getkeyvalpair();
+			for (auto j : keyvalpair) {
+				fs << j.first << " ";
+				fs << j.second << " ";
+			}
+		}
+
+		else {
+			BPT<std::string>* t = (BPT<std::string>*)getindex(i.second->tableName, i.second->indexName);
+			std::map<std::string, int64> keyvalpair;
+			keyvalpair = t->getkeyvalpair();
+			for (auto j : keyvalpair) {
+				fs << j.first << " ";
+				fs << j.second << " ";
+			}
+		}
+	}
 }
 
-void IndexManager::setkey(int type, string key){
-	stringstream ss;
-	ss << key;
-	if (type == this->INT) ss >> this->tmp.inttmp;
-	else if (type == this->FLOAT) ss >> this->tmp.floattmp;
-	else if (type > 0) ss >> this->tmp.stringtmp;
-	else return;
+void IndexManager::readfromBuffer() {
+	std::ifstream fs;
+	fs.open("indexes.bin", std::fstream::in);
+	if (!fs) {
+		return;
+	}
+	//read indexmap
+	int indexmapSize;
+	fs >> indexmapSize;
+	for (int j = 0; j < indexmapSize; ++j) {
+		int size;
+		IndexInfo* indexinfo = (struct IndexInfo*)malloc(sizeof(struct IndexInfo));
+		fs >> size;
+		if (fs.eof()) break;
+		fs >> indexinfo->indexName;
+		fs >> indexinfo->tableName;
+		fs >> indexinfo->attrName;
+
+		indexmap.insert(std::map<int, IndexInfo*>::value_type(size, indexinfo));
+	}
+
+	// read key&value
+	for (auto i : indexmap) {
+		catalog type;
+		type = catalogManager->getCataByAttrName(i.second->indexName, i.second->attrName);
+		if (type == catalog::INT) {
+			BPT<int>* t = (BPT<int>*)getindex(i.second->tableName, i.second->indexName);
+			int key;
+			int64 value;
+			fs >> key;
+			fs >> value;
+			t->add_key(key, value);
+		}
+
+		else if (type == catalog::FLOAT) {
+			BPT<float>* t = (BPT<float>*)getindex(i.second->tableName, i.second->indexName);
+			float key;
+			int64 value;
+			fs >> key;
+			fs >> value;
+			t->add_key(key, value);
+		}
+
+		else {
+			BPT<std::string>* t = (BPT<std::string>*)getindex(i.second->tableName, i.second->indexName);
+			std::string key;
+			int64 value;
+			fs >> key;
+			fs >> value;
+			t->add_key(key, value);
+		}
+	}
 }
 
-int getkeysize(int type){
-	if (type == INT) return sizeof(int);
-	else if (type == FLOAT) return sizeof(float);
-	else if (type > 0) return type + 1;
-	else return -1; 
+
+int IndexManager::getkeysize(catalog type) {
+	if (type == catalog::INT) return sizeof(int);
+	else if (type == catalog::FLOAT) return sizeof(float);
+	else if (type == catalog::CHAR) return 255;
+	else throw std::exception("no this type");;
 }
 
-void* getindex(string indexName){
-	map<int, IndexInfo*>::iterator iter = indexmap.begin();
+int IndexManager::getdegree(catalog type) {
+	int degree = blockSpace / (getkeysize(type) + sizeof(int64));
+	if (degree % 2 == 0) degree -= 1;
+	return degree;
+}
+
+void* IndexManager::getindex(std::string tableName, std::string indexName){
+	std::map<int, IndexInfo*>::iterator iter = indexmap.begin();
 	for (; iter != indexmap.end(); iter++) {
-		string name;
-		name = (*iter->second).indexname;
-		if (name == indexname) {
+		if ((*iter->second).tableName == tableName && (*iter->second).indexName == indexName) {
 			return (*iter->second).Tree;
 		}
 	}
 	return NULL; 
 }
 
-void IndexManager::createIndex(std::string indexName, std::string tableName, std::string attrName, int type)
+void* IndexManager::createIndex(std::string indexName, std::string tableName, std::string attrName)
 {
-	IndexInfo *i = new IndexInfo;
+	IndexInfo* i = new IndexInfo;
 	void *Tree;
+	if (IndexManager::hasAnyIndex(tableName)) i->ifclustered = false;
 	i->indexName = indexName;
 	i->tableName = tableName;
 	i->attrName = attrName;
-	i->type = type;
-	
-	map<int, IndexInfo*>::iterator iter = indexmap.begin();
-	for (; iter != indexmap.end(); iter++) {
-		string name;
-		name = (*iter->second).tablename;
-		if (name == i->table){
-			i->ifclustered = false;
-		}
-	}
-	
+	i->type = catalogManager->getCataByAttrName(tableName, attrName);
+
 	int keysize = getkeysize(i->type);
+	int degree = getdegree(i->type);
 	
-	if (i->type == INT) {
-		BPT<int>* tree = new BPT<int>(indexName, keysize);
+	if (i->type == catalog::INT) {
+		BPT<int>* tree = new BPT<int>(keysize, degree);
 		i->Tree = tree;
-		indexmap.insert(pair<int, IndexInfo*>(indexmap.size()+1, i));
+		indexmap.insert(std::pair<int, IndexInfo*>(indexmap.size() + 1, i));
 		return tree;
 	}
 	
-	else if (i->type == FLOAT) {
-		BPT<float>* tree = new BPT<float>(indexName, keysize);
+	else if (i->type == catalog::FLOAT) {
+		BPT<float>* tree = new BPT<float>(keysize, degree);
 		i->Tree = tree;
-		indexmap.insert(pair<int, IndexInfo*>(indexmap.size()+1, i));
+		indexmap.insert(std::pair<int, IndexInfo*>(indexmap.size() + 1, i));
 		return tree;
 	}
 	
 	else {
-		BPT<string>* tree = new BPT<string>(indexName, keysize);
+		BPT<std::string>* tree = new BPT<std::string>(keysize, degree);
 		i->Tree = tree;
-		indexmap.insert(pair<int, IndexInfo*>(indexmap.size()+1, i));
+		indexmap.insert(std::pair<int, IndexInfo*>(indexmap.size() + 1, i));
 		return tree;
 	}
 }
 
-void IndexManager::dropIndex(std::string indexName)
+void IndexManager::dropIndex(std::string indexName, std::string tableName)
 {
-	map<int, IndexInfo*>::iterator iter;
+	std::map<int, IndexInfo*>::iterator iter;
 	void *tmp = NULL;
 	for (iter = indexmap.begin(); iter != indexmap.end(); iter++) {
-		string name;
-		name = (*iter->second).indexName;
-		if (name == indexName) {
+		if ((*iter->second).indexName == indexName && (*iter->second).tableName == tableName) {
 			tmp = (*iter->second).Tree;
-			if ((*iter->second).type == INT) {
+			if ((*iter->second).type == catalog::INT) {
 				BPT<int>* t = (BPT<int>*)tmp;
-				t->drop_tree(b->root);
+				t->drop_tree(t->root);
 			}
 			
-			else if ((*iter->second).type == FLOAT) {
+			else if ((*iter->second).type == catalog::FLOAT) {
 				BPT<float>* t = (BPT<float>*)tmp;
-				t->drop_tree(b->root);
+				t->drop_tree(t->root);
 			}
 			
 			else {
-				BPT<string>* t = (BPT<string>*)tmp;
-				t->drop_tree(b->root);
+				BPT<std::string>* t = (BPT<std::string>*)tmp;
+				t->drop_tree(t->root);
 			}
 			indexmap.erase(iter);
+			return;
 		}
 	}
+	throw std::exception("no specific index found");
 }
 
 void IndexManager::dropAllIndex(std::string tableName)
 {
-	map<int, IndexInfo*>::iterator iter;
+	std::map<int, IndexInfo*>::iterator iter;
 	void *tmp = NULL;
 	for (iter = indexmap.begin(); iter != indexmap.end(); iter++) {
-		string name;
-		name = (*iter->second).tableName;
-		if (name == tableName) {
+		std::string tablename;
+		tablename = (*iter->second).tableName;
+		if (tablename == tableName) {
 			tmp = (*iter->second).Tree;
-			if ((*iter->second).type == INT) {
+			if ((*iter->second).type == catalog::INT) {
 				BPT<int>* t = (BPT<int>*)tmp;
-				t->drop_tree(b->root);
+				t->drop_tree(t->root);
 			}
 			
-			else if ((*iter->second).type == FLOAT) {
+			else if ((*iter->second).type == catalog::FLOAT) {
 				BPT<float>* t = (BPT<float>*)tmp;
-				t->drop_tree(b->root);
+				t->drop_tree(t->root);
 			}
 			
 			else {
-				BPT<string>* t = (BPT<string>*)tmp;
-				t->drop_tree(b->root);
+				BPT<std::string>* t = (BPT<std::string>*)tmp;
+				t->drop_tree(t->root);
 			}
 			indexmap.erase(iter);
+			return;
 		}
 	}
+	throw std::exception("no index found in this table");
 }
 
-void IndexManager::insertToIndex(std::string indexName,std::string key, int type)
+void IndexManager::insertToIndex(std::string indexName, std::string tableName, std::any key, int64 value)
 {
-	setkey(type, key);
-	if (type == INT) {
-		BPT<int>* t = (BPT<int>*)getindex(indexname);
-		int a = stoi(key);
-		t->add_key(a);
+	std::map<int, IndexInfo*>::iterator iter;
+	catalog type;
+	for (iter = indexmap.begin(); iter != indexmap.end(); iter++) {
+		if ((*iter->second).tableName == tableName && (*iter->second).indexName == indexName) 
+			type = (*iter->second).type;
+	}
+	if (type == catalog::INT) {
+		BPT<int>* t = (BPT<int>*)getindex(tableName, indexName);
+		auto a = std::any_cast<int>(key);
+		t->add_key(a, value);
 	}
 	
-	else if (type == FLOAT) {
-		BPT<float>* t = (BPT<float>*)getindex(indexname);
-		int a = stof(key);
-		t->add_key(a);
+	else if (type == catalog::FLOAT) {
+		BPT<float>* t = (BPT<float>*)getindex(tableName, indexName);
+		auto a = std::any_cast<float>(key);
+		t->add_key(a, value);
 	}
 	
 	else {
-		BPT<string>* t = (BPT<string>*)getindex(indexname);
-		t->add_key(key);
+		BPT<std::string>* t = (BPT<std::string>*)getindex(tableName, indexName);
+		auto a = std::any_cast<std::string>(key);
+		t->add_key(a, value);
 	}
 }
 
@@ -201,15 +295,49 @@ void IndexManager::insertToIndex(std::string indexName,std::string key, int type
 //	return indexNane;
 //}
 
-std::vector<int64> IndexManager::selectIndexsByCondition(std::string TableName, std::string indexName, std::vector<condition> cond)
+std::vector<int64> IndexManager::selectIndexsByCondition(std::string tableName, std::string indexName, std::vector<condition> cond)
 {
-	return std::vector<int64>();
+	std::vector<int64> valvec;
+	std::vector<std::any> keyvec;
+	std::map<int, IndexInfo*>::iterator iter = indexmap.begin();
+	for (; iter != indexmap.end(); iter++) {
+		if ((*iter->second).tableName == tableName && (*iter->second).indexName == indexName) {
+			for (int i = 0; i < cond.size(); i++) {
+				if ((*iter->second).type == cond[i].cata && (*iter->second).attrName == cond[i].attrName) {
+					if ((*iter->second).type == catalog::INT) {
+						BPT<int>* t = (BPT<int>*)getindex(tableName, indexName);
+						valvec = t->retval();
+						keyvec = t->retkey();
+					}
+
+					else if ((*iter->second).type == catalog::FLOAT) {
+						BPT<float>* t = (BPT<float>*)getindex(tableName, indexName);
+						valvec = t->retval();
+						keyvec = t->retkey();
+					}
+
+					else {
+						BPT<std::string>* t = (BPT<std::string>*)getindex(tableName, indexName);
+						valvec = t->retval();
+						keyvec = t->retkey();
+					}
+				}
+			}
+		}
+	}
+	std::vector<int64> res;
+	for (int i = 0; i < valvec.size();i++) {
+		bool flag = 1;
+		for (auto c : cond) {
+			judger myjudger(c);
+			if (myjudger(keyvec[i]) == false)
+				flag = 0;
+		}
+		if (flag) res.push_back(valvec[i]);
+	}
+	return res;
 }
 
-void IndexManager::removeAllIndexByAddress(std::string TableName, std::vector<int64> addresses)
-{
-	
-}
 
 bool IndexManager::hasClusteredIndex(std::string tableName)
 {
@@ -218,30 +346,35 @@ bool IndexManager::hasClusteredIndex(std::string tableName)
 
 std::string IndexManager::getClusteredIndex(std::string tableName)
 {
-	map<int, IndexInfo*>::iterator iter = indexmap.begin();
-	for (; iter != indexmap.end(); it++) {
-		string name;
-		name = (*iter->second).tablename;
-		if (name == tableName && iter->second->ifclustered == true){
-			return (*iter->second).indexname;
+	std::map<int, IndexInfo*>::iterator iter = indexmap.begin();
+	for (; iter != indexmap.end(); iter++) {
+		if ((*iter->second).tableName == tableName && (*iter->second).ifclustered == true){
+			return (*iter->second).indexName;
 			break;
 		}
 	}
+	throw std::exception("no clustered index found");
 }
 
 bool IndexManager::hasNonClusteredIndex(std::string tableName)
 {
-	return IndexManager::hasAnyIndex(tableName);
+	std::vector<std::string> indexvec;
+	std::map<int, IndexInfo*>::iterator iter = indexmap.begin();
+	for (; iter != indexmap.end(); iter++) {
+		if ((*iter->second).tableName == tableName && (*iter->second).ifclustered == false) {
+			return true;
+			break;
+		}
+	}
+	return false;
 }
 
 std::vector<std::string> IndexManager::getNonClusteredIndex(std::string tableName)
 {
-	vector<string> indexvec;
-	map<int, IndexInfo*>::iterator iter = indexmap.begin();
-	for (; iter != indexmap.end(); it++) {
-		string name;
-		name = (*iter->second).tablename;
-		if (name == tableName && iter->second->ifclustered == false){
+	std::vector<std::string> indexvec;
+	std::map<int, IndexInfo*>::iterator iter = indexmap.begin();
+	for (; iter != indexmap.end(); iter++) {
+		if ((*iter->second).tableName == tableName && (*iter->second).ifclustered == false){
 			indexvec.push_back((*iter->second).indexName);
 		}
 	}
@@ -250,11 +383,9 @@ std::vector<std::string> IndexManager::getNonClusteredIndex(std::string tableNam
 
 bool IndexManager::hasAnyIndex(std::string tableName)
 {
-	map<int, IndexInfo*>::iterator iter = indexmap.begin();
+	std::map<int, IndexInfo*>::iterator iter = indexmap.begin();
 	for (; iter != indexmap.end(); iter++) {
-		string name;
-		name = (*iter->second).tablename;
-		if (name == tablename) {
+		if ((*iter->second).tableName == tableName) {
 			return true;
 		}
 	}
@@ -262,27 +393,22 @@ bool IndexManager::hasAnyIndex(std::string tableName)
 }
 
 std::vector<std::string> IndexManager::getAllIndex(std::string tableName)
-{}
-    vector<string> indexvec;
-	map<int, IndexInfo*>::iterator iter = indexmap.begin();
-	for (; iter != indexmap.end(); it++){
-		string name;
-		name = (*iter->second).tableName;
-		if (name == tableName) {
+{
+    std::vector<std::string> indexvec;
+	std::map<int, IndexInfo*>::iterator iter = indexmap.begin();
+	for (; iter != indexmap.end(); iter++){
+		if ((*iter->second).tableName == tableName) {
 			indexvec.push_back((*iter->second).indexName);
 		}
-		return indexvec;
 	}
+	return indexvec;
 }
 
 std::string IndexManager::getAttrNameByIndexName(std::string indexName, std::string tableName)
 {
-	map<int, IndexInfo*>::iterator iter = indexmap.begin();
-	for (; iter != indexmap.end(); it++){
-		string indxname, tabname;
-		indxname = (*iter->second).indexName;
-		tabname = (*iter->second).tableName;
-		if (indxname == indexName && tabname == tableName) {
+	std::map<int, IndexInfo*>::iterator iter = indexmap.begin();
+	for (; iter != indexmap.end(); iter++){
+		if ((*iter->second).indexName == indexName && (*iter->second).tableName == tableName) {
 			return (*iter->second).attrName;
 		}
 	}
@@ -290,13 +416,49 @@ std::string IndexManager::getAttrNameByIndexName(std::string indexName, std::str
 
 std::string IndexManager::getIndexNameByAttrName(std::string attrName, std::string tableName)
 {
-	map<int, IndexInfo*>::iterator iter = indexmap.begin();
-	for (; iter != indexmap.end(); it++){
-		string attname, tabname;
-		attname = (*iter->second).attrName;
-		tabname = (*iter->second).tableName;
-		if (attname == attrName && tabname == tableName) {
+	std::map<int, IndexInfo*>::iterator iter = indexmap.begin();
+	for (; iter != indexmap.end(); iter++){
+		if ((*iter->second).attrName == attrName && (*iter->second).tableName == tableName) {
 			return (*iter->second).indexName;
+		}
+	}
+}
+
+void IndexManager::removeIndexByAddress(std::string tableName, std::vector<int64> addresses) {
+	std::map<int, IndexInfo*>::iterator iter = indexmap.begin();
+	catalog type;
+	std::string tablename;
+	std::string indexname;
+	std::vector<int64> valvec;
+	for (; iter != indexmap.end(); iter++) {
+		tablename = (*iter->second).tableName;
+		indexname = (*iter->second).indexName;
+		type = (*iter->second).type;
+		if (tablename == tableName) {
+			if (type == catalog::INT) {
+				BPT<int>* t = (BPT<int>*)getindex(tablename, indexname);
+				//valvec = t->retval();
+				t->delval(addresses);
+			}
+
+			else if (type == catalog::FLOAT) {
+				BPT<float>* t = (BPT<float>*)getindex(tablename, indexname);
+				//valvec = t->retval();
+				t->delval(addresses);
+			}
+
+			else {
+				BPT<std::string>* t = (BPT<std::string>*)getindex(tablename, indexname);
+				//valvec = t->retval();
+				t->delval(addresses);
+			}
+			/*for (int i = 0; i < addresses.size(); i++) {
+				for (int j = 0; j < valvec.size(); j++) {
+					if (addresses[i] == valvec[j]) {
+						dropIndex(indexname, tablename);
+					}
+				}
+			}*/
 		}
 	}
 }

@@ -1,16 +1,11 @@
 #pragma once
-#include <string>
+#include<string>
 #include <memory>
 #include "BufferManager.h"
-#include "CatalogManager.h"
-#include "Def.h"
 class RecordManager {
 private:
 	std::shared_ptr<BufferManager> bufferManager;
 	std::shared_ptr<CatalogManager> catalogManager;
-
-	bool judgeCondition(std::string tableName, anyVec record, condition cond);
-	
 public:
 	int test();
 

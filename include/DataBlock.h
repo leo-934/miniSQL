@@ -4,6 +4,7 @@
 #include "Def.h"
 class DataBlock {
 public:
+	DataBlock();
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DataBlock"/> class.
 	/// </summary>

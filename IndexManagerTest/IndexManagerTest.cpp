@@ -12,8 +12,8 @@ namespace IndexManagerTest
 		
 		TEST_METHOD(TestMethod1)
 		{
-			//IndexManager test;
-			//Assert::AreEqual(1, test.test());
+			IndexManager test;
+			Assert::AreEqual(1, test.test());
 		}
 	};
 }

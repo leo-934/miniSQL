@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\APP.h" />
+    <ClInclude Include="..\include\bplustree.h" />
     <ClInclude Include="..\include\DataBlock.h" />
     <ClInclude Include="..\include\BufferManager.h" />
     <ClInclude Include="..\include\CatalogManager.h" />

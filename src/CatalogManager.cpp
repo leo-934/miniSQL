@@ -2,7 +2,6 @@
 #include <fstream>
 #include <map>
 #include <utility>
-#include "Def.h"
 #include "CatalogManager.h"
 int CatalogManager::test()
 {
@@ -114,7 +113,12 @@ void CatalogManager::close()//待测试
 			fs << j << " ";
 		}
 	}
-} 
+}
+std::vector<std::string> CatalogManager::getOriginalAttrNames(std::string tableName)
+{
+	return originalAttrNames[tableName];
+}
+
 
 catalog CatalogManager::getCataByAttrName(std::string tableName, std::string attrName)
 {
@@ -158,11 +162,11 @@ std::vector<std::string> CatalogManager::getAllAttrByTableName(std::string table
 	std::vector<std::string> res;
 	if(catas.find(tableName)==catas.end()) throw std::exception("no this table");
 	for (auto i : catas[tableName]) res.push_back(i.first);
-	return res;
 }
 
 void CatalogManager::createTable(CreateTableSentence sent)
 {
+	originalAttrNames.insert(std::map < std::string, std::vector < std::string> > ::value_type(sent.tableName, sent.originalAttr));
 	catas.insert(std::map< std::string, std::map<std::string, catalog> >::value_type(sent.tableName, sent.attrCata));
 	attrLenForChars.insert(std::map<std::string, std::map<std::string, int> >::value_type(sent.tableName, sent.attrLenForChar));
 	if(sent.primaryKey!=" ") primaryKeys.insert(std::map<std::string, std::string>::value_type(sent.tableName, sent.primaryKey));

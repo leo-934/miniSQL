@@ -1,4 +1,4 @@
-#include "..\include\def.h"
+#include "..\include\Def.h"
 catalog judger::getCata()
 {
 	return cata;
@@ -53,4 +53,9 @@ judger::judger(condition cond)
 bool judger::operator()(std::any attrValue)
 {
 	return func(attrValue);
+}
+
+Operation Sentence::getOp()
+{
+	return op;
 }

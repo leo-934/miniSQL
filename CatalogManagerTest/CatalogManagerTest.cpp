@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "Def.h"
 #include "CppUnitTest.h"
 #include "CatalogManager.h"
 
@@ -11,7 +10,7 @@ namespace CatalogManagerTest
 	{
 	public:
 		
-		TEST_METHOD(TestMethod1)
+		/*TEST_METHOD(TestMethod1)
 		{
 			CatalogManager test;
 			Assert::AreEqual(1, test.test());
@@ -32,6 +31,6 @@ namespace CatalogManagerTest
 			test.close();
 			CatalogManager result;
 			Assert::AreEqual((int)catalog::FLOAT, (int)(result.getCataByAttrName("testTable", "qwe")));
-		}
+		}*/
 	};
 }

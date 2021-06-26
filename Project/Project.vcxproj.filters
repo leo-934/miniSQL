@@ -122,9 +122,6 @@
     <ClInclude Include="..\include\RecordManager.h">
       <Filter>Header Files\RecordManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\Def.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\DataBlock.h">
       <Filter>Header Files\BufferManager</Filter>
     </ClInclude>
@@ -133,6 +130,12 @@
     </ClInclude>
     <ClInclude Include="..\include\Writer.h">
       <Filter>Header Files\Writer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Def.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\bplustree.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

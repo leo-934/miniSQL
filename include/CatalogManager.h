@@ -1,12 +1,14 @@
 #pragma once
+
+#include "Def.h"
 #include <string>
 #include <set>
 #include <map>
 #include <vector>
-#include "def.h"
 
 class CatalogManager {
 private:
+	std::map<std::string, std::vector<std::string> > originalAttrNames;
 	std::map<std::string, std::map<std::string, catalog> > catas;
 	std::map<std::string,std::map<std::string, int> > attrLenForChars;
 	std::map<std::string, std::string> primaryKeys;//若没有，则找不到
@@ -21,6 +23,8 @@ public:
 	/// Closes this instance.
 	/// </summary>
 	void close();
+
+	std::vector<std::string> getOriginalAttrNames(std::string tableName);
 	/// <summary>
 	/// Gets the attribute's cata.
 	/// </summary>

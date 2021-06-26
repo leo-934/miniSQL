@@ -13,5 +13,5 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	std::string getSqlSentence();
-	
+	~SqlScanner();
 };
