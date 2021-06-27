@@ -1009,4 +1009,3 @@ insert into person values (2299.0, 999, "Mike", "34a46445-5240-438e-aeaf-bb40db2
 create index idx_height on person(height);
 create index idx_identity on person(identity);
 create index idx_age on person(age);
-drop table person;

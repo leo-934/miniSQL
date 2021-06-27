@@ -186,9 +186,9 @@ void BufferManager::deleteRecordByAddress(std::string tableName, int64 address)
 	auto blockTmp = refBlockByLabel(tableName, 0);
 	int64 blockSerial = (address) / (blockTmp.getRecordMax());
 	int64 recordSerialInBlock = (address) % (blockTmp.getRecordMax());
-	if (recordSerialInBlock == 17) {
+	/*if (recordSerialInBlock == 17) {
 		std::cout << "bug";
-	}
+	}*/
 	refBlockByLabel(tableName, blockSerial).removeRecord(recordSerialInBlock);
 	recordNum[tableName]--;
 	return;
