@@ -2,6 +2,7 @@
 #include <fstream>
 #include <map>
 #include <utility>
+#include <iostream>
 #include "CatalogManager.h"
 int CatalogManager::test()
 {
@@ -148,7 +149,10 @@ catalog CatalogManager::getCataByAttrName(std::string tableName, std::string att
 	auto tmp = catas.find(tableName);
 	if (tmp == catas.end()) throw std::exception("no this table");
 	auto res = tmp->second.find(attrName);
-	if(res==tmp->second.end()) throw std::exception("no this attr");
+	if (res == tmp->second.end()) {
+		std::cout << "123";
+		throw std::exception("no this attr");
+	}
 	return res->second;
 }
 

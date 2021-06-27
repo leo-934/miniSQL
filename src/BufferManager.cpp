@@ -81,6 +81,7 @@ int BufferManager::test()
 BufferManager::BufferManager(std::shared_ptr<CatalogManager> ptr)
 {
 	catalogManager = ptr;
+
 	std::ifstream fs("bufferManager.bin", std::ifstream::in);
 	int blockNumSize;
 	fs >> blockNumSize;
@@ -114,6 +115,10 @@ BufferManager::BufferManager(std::shared_ptr<CatalogManager> ptr)
 		tableNames.insert(f);
 	}
 	fs.close();
+
+	for (auto name : tableNames) {
+		fsMap[name] = std::make_shared<std::fstream>(name + ".bin", std::fstream::in|std::fstream::out|std::fstream::binary);
+	}
 }
 
 void BufferManager::close()
@@ -181,6 +186,9 @@ void BufferManager::deleteRecordByAddress(std::string tableName, int64 address)
 	auto blockTmp = refBlockByLabel(tableName, 0);
 	int64 blockSerial = (address) / (blockTmp.getRecordMax());
 	int64 recordSerialInBlock = (address) % (blockTmp.getRecordMax());
+	if (recordSerialInBlock == 17) {
+		std::cout << "bug";
+	}
 	refBlockByLabel(tableName, blockSerial).removeRecord(recordSerialInBlock);
 	recordNum[tableName]--;
 	return;

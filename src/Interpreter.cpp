@@ -457,7 +457,9 @@ std::shared_ptr<struct Sentence> Interpreter::parseSql(std::string s){
 	}
 	
 	else if (strcmp(word.c_str(), "quit") == 0) {
-		throw std::exception("Error");
+		auto p = std::make_shared<QuitSentence>();
+		p->op = Operation::quit;
+		return p;
 	}
 	
 	else if (strcmp(word.c_str(), "execfile") == 0) {

@@ -8,7 +8,7 @@ int IndexManager::test()
 IndexManager::IndexManager(std::shared_ptr<CatalogManager> _catalogManager)
 {
 	catalogManager = _catalogManager;
-	readfromBuffer();
+	//readfromBuffer();
 	std::map<int, IndexInfo*>::iterator iter = indexmap.begin();
 	for (; iter != indexmap.end(); iter++) {
 		createIndex(iter->second->indexName, iter->second->tableName, 
@@ -250,7 +250,7 @@ void IndexManager::dropAllIndex(std::string tableName)
 			return;
 		}
 	}
-	throw std::exception("no index found in this table");
+	//throw std::exception("no index found in this table");
 }
 
 void IndexManager::insertToIndex(std::string indexName, std::string tableName, std::any key, int64 value)

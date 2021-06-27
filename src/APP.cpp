@@ -20,7 +20,7 @@ void APP::run()
 	while (1) {
 		static int a = 0;
 		
-		try {
+		
 			writer->writePromt("root");
 			auto sent = in.getSqlSentence();
 			if (sent == "filemode") {
@@ -34,10 +34,6 @@ void APP::run()
 			}*/
 			auto parseResult = interpreter->parseSql(sent);
 			execSql(parseResult);
-		}
-		catch (std::exception& a) {
-			std::cout << "invalid input"<<std::endl;
-		}
 	}
 }
 
@@ -56,11 +52,18 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 		}
 	}
 	else if (parseResult->op == Operation::dropTable) {
+		
 		auto startExec = time(0);
 		auto res = std::dynamic_pointer_cast<DropTableSentence>(parseResult);
-		catalogManager->dropTable(res->tableName);
-		indexManager->dropAllIndex(res->tableName);
+		auto tmp = catalogManager->getAllTableNames();
+		int flag = 1;
+		for (auto a : tmp) {
+			if (a == res->tableName) flag = 0;
+		}
+		if (flag) return;
 		bufferManager->dropTable(res->tableName);
+		indexManager->dropAllIndex(res->tableName);
+		catalogManager->dropTable(res->tableName);
 		auto endExec = time(0);
 		if (!fileMode) {
 			writer->writeDropResult("table " + res->tableName);
@@ -95,64 +98,45 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 	else if (parseResult->op == Operation::selectRecord) {
 		auto startExec = time(0);
 		auto res = std::dynamic_pointer_cast<SelectRecordSentence>(parseResult);
+		std::string indexToUse;
+		
 		std::vector<std::string> attrNamesForIndex;
-		if (indexManager->hasClusteredIndex(res->tableName)) attrNamesForIndex.push_back(indexManager->getAttrNameByIndexName(indexManager->getClusteredIndex(res->tableName), res->tableName));
-		//if (indexManager->hasNonClusteredIndex(res->tableName)) attrNamesForIndex.push_back(indexManager->getAttrNameByIndexName(indexManager->getNonClusteredIndex(res->tableName)[0], res->tableName));
-		if (indexManager->hasNonClusteredIndex(res->tableName)) {
-			auto nonClusteredIndexes = indexManager->getNonClusteredIndex(res->tableName);
-			for(auto i:nonClusteredIndexes)
-				attrNamesForIndex.push_back(indexManager->getAttrNameByIndexName(i, res->tableName));
+		if (indexManager->hasClusteredIndex(res->tableName)) {
+			attrNamesForIndex.push_back(indexManager->getClusteredIndex(res->tableName));
 		}
+		if (indexManager->hasNonClusteredIndex(res->tableName)) {
+			auto tmp = indexManager->getNonClusteredIndex(res->tableName);
+			for (auto i : tmp) {
+				attrNamesForIndex.push_back(i);
+			}
+		}
+		std::vector<condition> conditionsForIndex;
+		std::vector<condition> conditionsNotForIndex;
+		std::string i;
 		if (attrNamesForIndex.size() > 0) {
 
 
-			auto i = attrNamesForIndex[0];
-			std::vector<condition> conditionsForIndex;
-			std::vector<condition> conditionsNotForIndex;
+			i = attrNamesForIndex[0];
+
 			for (auto k : res->conditions) {
 				if (i == k.attrName) conditionsForIndex.push_back(k);
 				else conditionsNotForIndex.push_back(k);
 			}
-
-			auto addresses = indexManager->selectIndexsByCondition(res->tableName, indexManager->getIndexNameByAttrName(i, res->tableName), conditionsForIndex);
-			auto selectRes = recordManager->selectRecordsByAddressAndCondition(res->tableName, addresses, conditionsNotForIndex);
+		}
+		std::vector<int64> addresses;
+		std::vector<anyVec> selectRes;
+		if (attrNamesForIndex.size() > 0) {
+			addresses = indexManager->selectIndexsByCondition(res->tableName, indexManager->getIndexNameByAttrName(i, res->tableName), conditionsForIndex);
+			selectRes = recordManager->selectRecordsByAddressAndCondition(res->tableName, addresses, conditionsNotForIndex);
+		}
+		else {
+			selectRes = recordManager->selectRecordsByCondition(res->tableName, res->conditions);
+		}
 			auto endExec = time(0);
 			writer->writeSelectResult(res->tableName, selectRes);
 			writer->writeTime(endExec - startExec);
-			
-
-			
-			//auto addresses = indexManager->selectIndexsByCondition(res->tableName, indexManager->getIndexNameByAttrName(i, res->tableName), conditionsForIndex);
-			//auto actualRemovedAddresses = recordManager->removeRecordsByAddressAndCondition(res->tableName, addresses, conditionsNotForIndex);
-			//indexManager->removeIndexByAddress(res->tableName, actualRemovedAddresses);
-			//auto endExec = time(0);
-			//writer->writeDeleteResult();
-			//writer->writeTime(endExec - startExec);
-			
-			//writer
 			return;
 
-
-			//for (auto i : attrNamesForIndex) {
-			//	for (auto j : res->conditions) {
-			//		if (j.attrName == i) {
-			//			std::vector<condition> conditionsForIndex;
-			//			std::vector<condition> conditionsNotForIndex;
-			//			for (auto k : res->conditions) {
-			//				if (i == k.attrName) conditionsForIndex.push_back(k);
-			//				else conditionsNotForIndex.push_back(k);
-			//			}
-			//			auto addresses=indexManager->selectIndexsByCondition(res->tableName, indexManager->getIndexNameByAttrName(i,res->tableName), conditionsForIndex);
-			//			auto selectRes=recordManager->selectRecordsByAddressAndCondition(res->tableName, addresses, conditionsNotForIndex);
-			//			auto endExec = time(0);
-			//			writer->writeSelectResult(res->tableName,selectRes);
-			//			writer->writeTime(endExec - startExec);
-			//			//writer
-			//			return;
-			//		}
-			//	}
-			//}
-		}
 	}
 	else if (parseResult->op == Operation::insertRecord) {
 		auto startExec = time(0);
@@ -183,27 +167,45 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 
 	}
 	else if (parseResult->op == Operation::deleteRecord) {
+
 		auto startExec = time(0);
 		auto res = std::dynamic_pointer_cast<DeleteRecordSentence>(parseResult);
+		std::string indexToUse;
+
 		std::vector<std::string> attrNamesForIndex;
-		if (indexManager->hasClusteredIndex(res->tableName)) attrNamesForIndex.push_back(indexManager->getAttrNameByIndexName(indexManager->getClusteredIndex(res->tableName), res->tableName));
-		//if (indexManager->hasNonClusteredIndex(res->tableName)) attrNamesForIndex.push_back(indexManager->getAttrNameByIndexName(indexManager->getNonClusteredIndex(res->tableName)[0], res->tableName));
-		if (indexManager->hasNonClusteredIndex(res->tableName)) {
-			auto nonClusteredIndexes = indexManager->getNonClusteredIndex(res->tableName);
-			for (auto i : nonClusteredIndexes)
-				attrNamesForIndex.push_back(indexManager->getAttrNameByIndexName(i, res->tableName));
+		if (indexManager->hasClusteredIndex(res->tableName)) {
+			attrNamesForIndex.push_back(indexManager->getClusteredIndex(res->tableName));
 		}
+		if (indexManager->hasNonClusteredIndex(res->tableName)) {
+			auto tmp = indexManager->getNonClusteredIndex(res->tableName);
+			for (auto i : tmp) {
+				attrNamesForIndex.push_back(i);
+			}
+		}
+		std::vector<condition> conditionsForIndex;
+		std::vector<condition> conditionsNotForIndex;
+		std::string i;
 		if (attrNamesForIndex.size() > 0) {
-			auto i = attrNamesForIndex[0];
-			std::vector<condition> conditionsForIndex;
-			std::vector<condition> conditionsNotForIndex;
+
+
+			i = attrNamesForIndex[0];
+
 			for (auto k : res->conditions) {
 				if (i == k.attrName) conditionsForIndex.push_back(k);
 				else conditionsNotForIndex.push_back(k);
 			}
-			auto addresses = indexManager->selectIndexsByCondition(res->tableName, indexManager->getIndexNameByAttrName(i, res->tableName), conditionsForIndex);
-			auto actualRemovedAddresses = recordManager->removeRecordsByAddressAndCondition(res->tableName, addresses, conditionsNotForIndex);
+		}
+		std::vector<int64> addresses;
+		std::vector<int64> actualRemovedAddresses;
+		if (attrNamesForIndex.size() > 0) {
+			addresses = indexManager->selectIndexsByCondition(res->tableName, indexManager->getIndexNameByAttrName(i, res->tableName), conditionsForIndex);
+			actualRemovedAddresses = recordManager->removeRecordsByAddressAndCondition(res->tableName, addresses, conditionsNotForIndex);
 			indexManager->removeIndexByAddress(res->tableName, actualRemovedAddresses);
+		}
+		else {
+			recordManager->removeRecordsByCondition(res->tableName,  res->conditions);
+		}
+			
 			auto endExec = time(0);
 			
 			//writer
@@ -212,7 +214,6 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 				writer->writeTime(endExec - startExec);
 			}
 			return;
-		}
 	}
 	else if (parseResult->op == Operation::execFile) {
 		auto startExec = time(0);

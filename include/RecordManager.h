@@ -36,6 +36,8 @@ public:
 	/// <param name="conds">The conds.</param>
 	/// <returns></returns>
 	std::vector<anyVec> selectRecordsByAddressAndCondition(std::string tableName, std::vector<int64> addresses, std::vector<condition> conds);
+	std::vector<int64> removeRecordsByCondition(std::string tableName, std::vector<condition> conds);
+	std::vector<anyVec> selectRecordsByCondition(std::string tableName, std::vector<condition> conds);
 
 	void addPastRecordToIndex(std::string tableName);
 };
