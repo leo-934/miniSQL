@@ -36,11 +36,9 @@ DataBlock::DataBlock(anyVec _cata)
 	recordMax = blockSpace / (recordSpace+1);
 }
 
-void DataBlock::fromFile(std::ifstream & fs)
+void DataBlock::fromFile(std::fstream & fs)
 {
-	if (!fs) {
-		//std::cout << "fs123";
-	}
+	fs.clear();
 	int a=fs.tellg();
 	//fs.read((byte*)&recordNum, 4);//使用了c风格的类型转换，待修改
 	for (int k = 0; k < recordMax; k++) {
@@ -81,19 +79,11 @@ void DataBlock::fromFile(std::ifstream & fs)
 	}
 }
 
-void DataBlock::toFile(std::ofstream & fs)
+void DataBlock::toFile(std::fstream & fs)
 {
 	
-	if (fs.fail()) {
-		fs.clear();
-	}
-	if (fs.fail()) {
-		fs.clear();
-	}
-	//fs.write((char*)&recordNum, intSpace);
-	if (!fs) {
-		//std::cout << "tofs123";
-	}
+	fs.clear();
+	
 	for (auto record : records) {
 		if (record.size() != 0) {
 			int a = fs.tellp();
@@ -104,35 +94,28 @@ void DataBlock::toFile(std::ofstream & fs)
 			for (int i = 0, j = 0; i < record.size(); i++, j++) {
 				if (record[i].type() == typeid(int)) {
 					fs.write((const byte*)(record[i]._Cast<int>()), intSpace);
-					if (fs.failbit) {
-						//std::cout << "fail";
-					}
+					
 				}
 				else if (record[i].type() == typeid(std::string)) {
 					j++;
 					fs.write((const byte*)((*record[i]._Cast<std::string>()).c_str()), *cata[j]._Cast<int>());
-					if (fs.failbit) {
-						//std::cout << "fail";
-					}
+					
 				}
 				else {
 					int a = fs.tellp();
 					bool c = record[i].type() == typeid(float);
 					float d = *(record[i]._Cast<float>());
 					fs.write((const byte*)(record[i]._Cast<float>()), floatSpace);
-					if (fs.failbit) {
-						//std::cout << "fail";
-					}
+					
 				}
 			}
 		}
 		else {
 			fs.write((const byte*)&recordInvalid, charSpace);
-			if (fs.fail()) {
-				//std::cout << "fail";
-			}
+			
 			fs.seekp(static_cast<int64>(recordSpace), fs.cur);
 		}
+		fs.flush();
 	}
 	fs.flush();
 }

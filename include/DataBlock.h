@@ -15,13 +15,13 @@ public:
 	/// 把块读出文件
 	/// </summary>
 	/// <param name="fp">c语言文件指针</param>
-	void fromFile(std::ifstream & fs);
+	void fromFile(std::fstream & fs);
 
 	/// <summary>
 	/// 把块写入文件
 	/// </summary>
 	/// <param name="fp">c语言文件指针</param>
-	void toFile(std::ofstream & fs);
+	void toFile(std::fstream & fs);
 
 
 	/// <summary>

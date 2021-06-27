@@ -13,11 +13,11 @@ public:
 	Writer(std::shared_ptr<CatalogManager> _catalogManager);
 	void writeTime(clock_t execTime);
 	void writeSelectResult(std::string tableName, std::vector<anyVec> res);
-	void writeInsertResult();
-	void writeDeleteResult();
-	void writeDropResult();
-	void writeCreateResult();
-	void writeExecResult();
+	void writeInsertResult(std::string obj);
+	void writeDeleteResult(std::string obj);
+	void writeDropResult(std::string obj);
+	void writeCreateResult(std::string obj);
+	void writeExecResult(std::string fileName);
 	void writeSplitLine(std::vector<int> lens);
 	void writePromt(std::string userName);
 };

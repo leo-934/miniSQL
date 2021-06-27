@@ -3,6 +3,7 @@
 #include <vector>
 #include <set>
 #include <memory>
+#include <fstream>
 #include "DataBlock.h"
 #include "CatalogManager.h"
 #include "Def.h"
@@ -19,7 +20,7 @@ private:
 		bool operator <(const blockLabel& x) const;
 	};
 	static int64 nextOrder;
-
+	std::map<std::string, std::shared_ptr<std::fstream> > fsMap;
 	std::map<blockLabel, DataBlock> buffer;
 	std::map<std::string, int64> blockNum;
 	std::map<std::string, int64> recordNum;

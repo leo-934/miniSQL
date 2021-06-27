@@ -15,7 +15,7 @@ private:
 	std::shared_ptr<IndexManager> indexManager;
 	std::shared_ptr<CatalogManager> catalogManager;
 	std::shared_ptr<Interpreter> interpreter;
-
+	bool fileMode;
 public:
 	APP();
 	/// <summary>

@@ -8,9 +8,9 @@ Writer::Writer(std::shared_ptr<CatalogManager> _catalogManager)
 
 void Writer::writeTime(clock_t execTime)
 {
-	double res = ((double)execTime) / CLOCKS_PER_SEC;
+	double res = ((double)execTime);
 	std::cout << "Total Time: ";
-	printf("%.2f\n", res);
+	printf("%.2f seconds\n", res);
 	return;
 }
 
@@ -87,39 +87,39 @@ void Writer::writeSelectResult(std::string tableName, std::vector<anyVec> res)
 	std::cout << res.size() << " rows in set"<<std::endl;
 }
 
-void Writer::writeInsertResult()
+void Writer::writeInsertResult(std::string obj)
 {
 	std::cout << std::endl;
 
-	std::cout << "insert success" << std::endl;
+	std::cout << "insert " <<obj<<" success" << std::endl;
 }
 
-void Writer::writeDeleteResult()
+void Writer::writeDeleteResult(std::string obj)
 {
 	std::cout << std::endl;
 
-	std::cout << "delete success" << std::endl;
+	std::cout << "delete " << obj << " success" << std::endl;
 }
 
-void Writer::writeDropResult()
+void Writer::writeDropResult(std::string obj)
 {
 	std::cout << std::endl;
 
-	std::cout << "drop success" << std::endl;
+	std::cout << "drop " << obj << " success" << std::endl;
 }
 
-void Writer::writeCreateResult()
+void Writer::writeCreateResult(std::string obj)
 {
 	std::cout << std::endl;
 
-	std::cout << "create success" << std::endl;
+	std::cout << "create "<<obj<<" success" << std::endl;
 }
 
-void Writer::writeExecResult()
+void Writer::writeExecResult(std::string fileName)
 {
 	std::cout << std::endl;
 
-	std::cout << "execute file success" << std::endl;
+	std::cout << "execute file "<< fileName<<" success" << std::endl;
 }
 
 void Writer::writeSplitLine(std::vector<int> lens)
@@ -136,7 +136,7 @@ void Writer::writeSplitLine(std::vector<int> lens)
 
 void Writer::writePromt(std::string userName)
 {
-	std::cout << userName << "@minisql";
+	std::cout << "minisql > ";
 }
 
 

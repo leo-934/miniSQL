@@ -21,29 +21,21 @@ void BufferManager::removeLRUBlock()
 			lruIter = iter;
 		}
 	}
-	if (std::ofstream::failbit) {
-		//std::cout << "abc";
-	}
-	std::ofstream fs1;
-	fs1.open("./"+lruIter->first.tableName + ".bin", std::ofstream::out | std::ofstream::binary);
-	if (fs1.is_open()) {
-		//std::cout << "qwe";
-	}
-	if (fs1.failbit) {
-		auto word = fs1.rdstate();
-	}
+	
+	
 	if (lruIter->first.blockSerial == 64) {
 		//std::cout << "64tobug";
 	}
-	fs1.seekp(lruIter->first.blockSerial * blockSpace, std::ofstream::beg);
-	if (fs1.failbit) {
+	fsMap[lruIter->first.tableName]->seekp(lruIter->first.blockSerial * blockSpace, std::fstream::beg);
+	/*if (fs1.failbit) {
 		auto word = fs1.rdstate();
-	}
-	if (lruIter->first.blockSerial == 0)
-		//std::cout << "0tobug";
-	lruIter->second.toFile(fs1);
+	}*/
+	/*if (lruIter->first.blockSerial == 0)
+		std::cout << "0tobug";*/
+	lruIter->second.toFile(*fsMap[lruIter->first.tableName]);
 	buffer.erase(lruIter);
-	fs1.close();
+	
+	//fs1.close();
 }
 
 DataBlock& BufferManager::refBlockByLabel(std::string tableName, int64 blockSerial)
@@ -55,12 +47,12 @@ DataBlock& BufferManager::refBlockByLabel(std::string tableName, int64 blockSeri
 			removeLRUBlock();
 		}
 		DataBlock d(catalogManager->getCataInAnyVec(tableName));
-		std::ifstream fs(tableName + ".bin", std::ifstream::binary | std::ifstream::in);
-		fs.seekg(blockSerial * blockSpace, std::ifstream::beg);
-		if (blockSerial == 0)
-			//std::cout << "0frombug";
-		d.fromFile(fs);
-		fs.close();
+		//std::ifstream fs(tableName + ".bin", std::ifstream::binary | std::ifstream::in);
+		fsMap[tableName]->seekg(blockSerial * blockSpace, std::fstream::beg);
+		/*if (blockSerial == 0)
+			std::cout << "0frombug";*/
+		d.fromFile(*fsMap[tableName]);
+		//fs.close();
 		buffer.insert(std::map<blockLabel, DataBlock>::value_type(blockLabel(tableName, blockSerial, nextOrder), d));
 		nextOrder++;
 		return buffer[blockLabel(tableName, blockSerial, 0)];
@@ -127,10 +119,10 @@ BufferManager::BufferManager(std::shared_ptr<CatalogManager> ptr)
 void BufferManager::close()
 {
 	for (auto i : buffer) {
-		std::ofstream fs(i.first.tableName + ".bin", std::ofstream::binary | std::ofstream::out);
-		fs.seekp(i.first.blockSerial * blockSpace, std::ofstream::beg);
-		i.second.toFile(fs);
-		fs.close();
+		//std::ofstream fs(i.first.tableName + ".bin", std::ofstream::binary | std::ofstream::out);
+		fsMap[i.first.tableName]->seekp(i.first.blockSerial * blockSpace, std::fstream::beg);
+		i.second.toFile(*fsMap[i.first.tableName]);
+		//fs.close();
 	}
 	std::ofstream fs("bufferManager.bin", std::ofstream::binary | std::ofstream::out);
 	fs << blockNum.size() << " ";
@@ -196,8 +188,10 @@ void BufferManager::deleteRecordByAddress(std::string tableName, int64 address)
 
 void BufferManager::createTable(std::string tableName)
 {
-	std::ofstream fs(tableName + ".bin",  std::ofstream::out|std::ofstream::binary);
-	fs.close();
+	std::ofstream fstmp(tableName + ".bin",  std::ofstream::out|std::ofstream::binary);
+	fstmp.close();
+	auto ptr = std::make_shared<std::fstream>(tableName+".bin", std::fstream::in| std::fstream::out | std::fstream::binary);
+	fsMap.insert((std::map<std::string, std::shared_ptr<std::fstream> >::value_type(tableName, ptr)));
 	tableNames.insert(tableName);
 }
 

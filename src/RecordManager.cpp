@@ -69,12 +69,7 @@ void RecordManager::addPastRecordToIndex(std::string tableName)
 	auto indexes = indexManager->getAllIndex(tableName);
 	auto attrs = catalogManager->getOriginalAttrNames(tableName);
 	for (int i = 0; i < recordNum; i++) {
-		if (i == 1472) {
-			//std::cout << "1472bug";
-		}
-		if (std::ofstream::failbit) {
-			//std::cout << "abc";
-		}
+		
 		auto record = bufferManager->getRecordByAddress(tableName, i);
 		if (record.size() != 0) {
 			for (auto index : indexes) {

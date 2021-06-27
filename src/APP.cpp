@@ -18,17 +18,21 @@ void APP::run()
 	}
 	SqlScanner in = SqlScanner();
 	while (1) {
-		//static int a = 0;
-		//a++;
-		//if (a==10001) {
-		//	//std::cout << a << std::endl;
-		//}
-		//if (std::ofstream::failbit) {
-		//	//std::cout << "abc";
-		//}
+		static int a = 0;
+		
 		try {
 			writer->writePromt("root");
-			auto parseResult = interpreter->parseSql(in.getSqlSentence());
+			auto sent = in.getSqlSentence();
+			if (sent == "filemode") {
+				fileMode = true;
+				continue;
+			}
+			else if(sent=="normalmode") fileMode = false;
+			/*if (mute) {
+				a++;
+				std::cout << a << std::endl;
+			}*/
+			auto parseResult = interpreter->parseSql(sent);
 			execSql(parseResult);
 		}
 		catch (std::exception& a) {
@@ -46,8 +50,10 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 		if (res->primaryKey != "") indexManager->createIndex(res->primaryKey, res->tableName, res->primaryKey);
 		bufferManager->createTable(res->tableName);
 		auto endExec = time(0);
-		writer->writeCreateResult();
-		writer->writeTime(endExec - startExec);
+		if (!fileMode) {
+			writer->writeCreateResult("table "+res->tableName);
+			writer->writeTime(endExec - startExec);
+		}
 	}
 	else if (parseResult->op == Operation::dropTable) {
 		auto startExec = time(0);
@@ -56,8 +62,11 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 		indexManager->dropAllIndex(res->tableName);
 		bufferManager->dropTable(res->tableName);
 		auto endExec = time(0);
-		writer->writeDropResult();
-		writer->writeTime(endExec - startExec);
+		if (!fileMode) {
+			writer->writeDropResult("table " + res->tableName);
+			writer->writeTime(endExec - startExec);
+		}
+		
 	}
 	else if (parseResult->op == Operation::createIndex) {
 		auto startExec = time(0);
@@ -65,16 +74,23 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 		indexManager->createIndex(res->indexName,res->tableName,res->attrName);
 		recordManager->addPastRecordToIndex(res->tableName);
 		auto endExec = time(0);
-		writer->writeCreateResult();
-		writer->writeTime(endExec - startExec);
+		if (!fileMode) {
+			writer->writeCreateResult("index " + res->indexName);
+			writer->writeTime(endExec - startExec);
+		}
+		
+		
 	}
 	else if (parseResult->op == Operation::dropIndex) {
 		auto startExec = time(0);
 		auto res = std::dynamic_pointer_cast<DropIndexSentence>(parseResult);
 		indexManager->dropIndex(res->indexName);
 		auto endExec = time(0);
-		writer->writeDropResult();
-		writer->writeTime(endExec - startExec);
+		if (!fileMode) {
+			writer->writeDropResult("index " + res->indexName);
+			writer->writeTime(endExec - startExec);
+		}
+		
 	}
 	else if (parseResult->op == Operation::selectRecord) {
 		auto startExec = time(0);
@@ -103,6 +119,7 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 			auto endExec = time(0);
 			writer->writeSelectResult(res->tableName, selectRes);
 			writer->writeTime(endExec - startExec);
+			
 
 			
 			//auto addresses = indexManager->selectIndexsByCondition(res->tableName, indexManager->getIndexNameByAttrName(i, res->tableName), conditionsForIndex);
@@ -138,7 +155,7 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 		}
 	}
 	else if (parseResult->op == Operation::insertRecord) {
-		//auto startExec = time(0);
+		auto startExec = time(0);
 		auto res = std::dynamic_pointer_cast<InsertRecordSentence>(parseResult);
 		//std::cout << 1;
 		if (std::ofstream::failbit) {
@@ -157,9 +174,12 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 			indexManager->insertToIndex(i, res->tableName, res->values[j],address);
 		}
 
-		//auto endExec = time(0);
-		//writer->writeInsertResult();
-		//writer->writeTime(endExec - startExec);
+		auto endExec = time(0);
+		if (!fileMode) {
+			writer->writeInsertResult("records on " + res->tableName);
+			writer->writeTime(endExec - startExec);
+		}
+		
 
 	}
 	else if (parseResult->op == Operation::deleteRecord) {
@@ -185,19 +205,40 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 			auto actualRemovedAddresses = recordManager->removeRecordsByAddressAndCondition(res->tableName, addresses, conditionsNotForIndex);
 			indexManager->removeIndexByAddress(res->tableName, actualRemovedAddresses);
 			auto endExec = time(0);
-			writer->writeDeleteResult();
-			writer->writeTime(endExec - startExec);
+			
 			//writer
+			if (!fileMode) {
+				writer->writeDeleteResult("records " + res->tableName);
+				writer->writeTime(endExec - startExec);
+			}
 			return;
 		}
 	}
 	else if (parseResult->op == Operation::execFile) {
+		auto startExec = time(0);
 		auto res = std::dynamic_pointer_cast<ExecFileSentence>(parseResult);
 		SqlScanner in(res->filePath);
 		while (1) {
-			auto filesent = in.getSqlSentence();
-			if (filesent == "") break;//可以把getSqlSentence改成抛出异常，可以改成try catch而不是接收返回值。具体使用哪一种其实我没有明确的决定
-			std::shared_ptr<Sentence> fileParseResult = interpreter->parseSql(filesent);
+			
+			auto sent = in.getSqlSentence();
+			if (sent == "filemode") {
+				fileMode = true;
+				continue;
+			}
+			else if (sent == "normalmode") fileMode = false;
+
+			if (sent == "") {
+				auto endExec = time(0);
+				if (fileMode) {
+					writer->writeExecResult(res->filePath);
+					writer->writeTime(endExec - startExec);
+				}
+				break;//可以把getSqlSentence改成抛出异常，可以改成try catch而不是接收返回值。具体使用哪一种其实我没有明确的决定
+			}
+			std::shared_ptr<Sentence> fileParseResult = interpreter->parseSql(sent);
+			if (fileParseResult->op == Operation::execFile) {
+				std::cout << "ac";
+			}
 			/*if (fileParseResult->op == Operation::dropTable) {
 				std::cout << "bug";
 			}*/
@@ -208,6 +249,8 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 		catalogManager->close();
 		bufferManager->close();
 		indexManager->close();
+		std::cout << "quit" << std::endl;
+		exit(0);
 	}
 	return;
 }
@@ -215,13 +258,20 @@ void APP::execSql(std::shared_ptr<Sentence> parseResult)
 bool APP::login()
 {
 	while (1) {
+		
 		std::cout << "username: ";
 		std::string username, password;
 		std::cin >> username;
 		std::cout << "password: ";
 		std::cin >> password;
 		if (username == "root" && password == "root") {
-			std::cout << "log in success\n";
+			//std::cout << "log in success\n";
+			std::cout << "." << std::endl;
+			std::cout << "Welcome to the MiniSQL monitor.Commands end with;" << std::endl;
+			std::cout << "Your MySQL connection id is 0" << std::endl;
+			std::cout << "Server version : 1.0.00 - windows10 (Microsoft)" << std::endl;
+			std::cout << "Copyright(c) 2021, Jianing Wang & Yitian Wang." << std::endl;
+			
 			return true;
 		}
 		else std::cout << "wrong password\n";

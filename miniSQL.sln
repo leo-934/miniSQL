@@ -24,6 +24,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CatalogManagerTest", "Catal
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BPTTest", "BPTTest\BPTTest.vcxproj", "{36193D71-DEB2-4ED8-961A-78FA14E23174}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MiniSqlSetup", "MiniSqlSetup\MiniSqlSetup.vdproj", "{90FEBEF6-E4E4-4174-8757-19BEC0699733}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -80,6 +82,10 @@ Global
 		{36193D71-DEB2-4ED8-961A-78FA14E23174}.Release|x64.Build.0 = Release|x64
 		{36193D71-DEB2-4ED8-961A-78FA14E23174}.Release|x86.ActiveCfg = Release|Win32
 		{36193D71-DEB2-4ED8-961A-78FA14E23174}.Release|x86.Build.0 = Release|Win32
+		{90FEBEF6-E4E4-4174-8757-19BEC0699733}.Debug|x64.ActiveCfg = Debug
+		{90FEBEF6-E4E4-4174-8757-19BEC0699733}.Debug|x86.ActiveCfg = Debug
+		{90FEBEF6-E4E4-4174-8757-19BEC0699733}.Release|x64.ActiveCfg = Release
+		{90FEBEF6-E4E4-4174-8757-19BEC0699733}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
