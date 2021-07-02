@@ -1,3 +1,13 @@
 version: 1.0.{build}
 build:
   verbosity: minimal
+test_script:
+  - vstest.console /logger:Appveyor C:\projects\minisql\x64\Debug\RecordManagerTest.dll
+  - vstest.console /logger:Appveyor C:\projects\minisql\x64\Debug\BufferManagerTest.dll
+  - vstest.console /logger:Appveyor C:\projects\minisql\x64\Debug\IndexManagerTest.dll
+  - vstest.console /logger:Appveyor C:\projects\minisql\x64\Debug\CatalogManagerTest.dll
+notifications:
+  - provider: Email
+    to:
+      - 1552443053@qq.com
+      - 2880880@qq.com
