@@ -88,31 +88,32 @@ void DataBlock::toFile(std::fstream & fs)
 		if (record.size() != 0) {
 			int a = fs.tellp();
 			fs.write((const byte*)(&recordValid), charSpace);//写入非空标记
+			fs.flush();
 			if (fs.fail()) {
 				auto word = fs.rdstate();
 			}
 			for (int i = 0, j = 0; i < record.size(); i++, j++) {
 				if (record[i].type() == typeid(int)) {
-					fs.write((const byte*)(record[i]._Cast<int>()), intSpace);
-					
+					fs.write((const byte*)&(*record[i]._Cast<int>()), intSpace);
+					fs.flush();
 				}
 				else if (record[i].type() == typeid(std::string)) {
 					j++;
 					fs.write((const byte*)((*record[i]._Cast<std::string>()).c_str()), *cata[j]._Cast<int>());
-					
+					fs.flush();
 				}
 				else {
 					int a = fs.tellp();
 					bool c = record[i].type() == typeid(float);
 					float d = *(record[i]._Cast<float>());
-					fs.write((const byte*)(record[i]._Cast<float>()), floatSpace);
-					
+					fs.write((const byte*)&(*record[i]._Cast<float>()), floatSpace);
+					fs.flush();
 				}
 			}
 		}
 		else {
 			fs.write((const byte*)&recordInvalid, charSpace);
-			
+			fs.flush();
 			fs.seekp(static_cast<int64>(recordSpace), fs.cur);
 		}
 		fs.flush();
