@@ -333,12 +333,12 @@ Buffer Manager负责缓冲区的管理，主要功能有：
 ### **本组成员**
 |  姓名   |   学号  |
 | :----: | :----: |
-| 王佳宁  | 3190105248 |
-| 王奕天  | 3190102362 |
+| 王佳宁  |  |
+| 王奕天  |  |
 
 ### **本组分工**
 |  姓名   |  分工  |
 | :----: | :----: |
-| 王佳宁  | 项目架构设计<br>API模块<br>CatalogManager模块<br>RecordManager模块<br>BufferManager模块<br>调试<br>报告撰写 |
-| 王奕天  | Interpreter模块<br>IndexManager&BplusTree模块<br>报告撰写 |
+| 王佳宁  | 项目架构设计<br>Interpreter模块<br>API模块<br>CatalogManager模块<br>RecordManager模块<br>BufferManager模块<br>调试<br>报告撰写 |
+| 王奕天  | IndexManager&BplusTree模块<br>报告撰写 |
 
