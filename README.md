@@ -309,19 +309,19 @@ Buffer Manager负责缓冲区的管理，主要功能有：
 
 下面给出1000组数据的详细截图
 
-![1](.\readmeImages\1.jpg)
+![1](https://github.com/JianingWang43/miniSQL/blob/main/readmeImages/1.jpg)
 
 测试结果如下
 
-![2](.\readmeImages\2.jpg)
+![2](https://github.com/JianingWang43/miniSQL/blob/main/readmeImages/2.jpg)
 
 试图进行查询，结果如下：
 
-![3](.\readmeImages\3.jpg)
+![3](https://github.com/JianingWang43/miniSQL/blob/main/readmeImages/3.jpg)
 
 重启程序，再次查询，观察是否能够保存表，结果如下
 
-![4](.\readmeImages\4.jpg)
+![4](https://github.com/JianingWang43/miniSQL/blob/main/readmeImages/4.jpg)
 
 总体上来讲，实验结果比较成功。
 
