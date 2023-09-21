@@ -1,26 +1,30 @@
-#pragma once
+#ifndef BUFFERMANAGER
+#define BUFFERMANAGER
+
 #include <string>
 #include <vector>
 #include <set>
 #include <memory>
 #include <fstream>
-#include "DataBlock.h"
-#include "CatalogManager.h"
-#include "Def.h"
-class BufferManager {
+#include "datablock.h"
+#include "catalogmanager.h"
+#include "def.h"
+class BufferManager
+{
 private:
 	const int bufferMaxSize = 64;
 
 	std::shared_ptr<CatalogManager> catalogManager;
-	struct blockLabel {
+	struct blockLabel
+	{
 		std::string tableName;
-		int64 blockSerial;//从0开始
+		int64 blockSerial; // 从0开始
 		int64 useOrder;
 		blockLabel(std::string _tableName, int64 _blockSerial, int64 _useOrder);
-		bool operator <(const blockLabel& x) const;
+		bool operator<(const blockLabel &x) const;
 	};
 	static int64 nextOrder;
-	std::map<std::string, std::shared_ptr<std::fstream> > fsMap;
+	std::map<std::string, std::shared_ptr<std::fstream>> fsMap;
 	std::map<blockLabel, DataBlock> buffer;
 	std::map<std::string, int64> blockNum;
 	std::map<std::string, int64> recordNum;
@@ -35,7 +39,7 @@ private:
 	/// <param name="tableName">Name of the table.</param>
 	/// <param name="blockSerial">The block serial.</param>
 	/// <returns></returns>
-	DataBlock& refBlockByLabel(std::string tableName, int64 blockSerial);
+	DataBlock &refBlockByLabel(std::string tableName, int64 blockSerial);
 
 	/// <summary>
 	/// 代理插入buffer,通过修改这个函数可以管理缓冲区
@@ -91,15 +95,15 @@ public:
 	void dropTable(std::string tableName);
 	int64 getTotalInsertNum(std::string tableName);
 };
-//#pragma once
-//#include <string>
-//#include <vector>
-//#include <set>
-//#include <memory>
-//#include "DataBlock.h"
-//#include "CatalogManager.h"
-//class BufferManager {
-//private:
+// #pragma once
+// #include <string>
+// #include <vector>
+// #include <set>
+// #include <memory>
+// #include "DataBlock.h"
+// #include "CatalogManager.h"
+// class BufferManager {
+// private:
 //	std::shared_ptr<CatalogManager> catalogManager;
 //
 //	struct blockLabel{
@@ -112,7 +116,7 @@ public:
 //	std::map<std::string, int64> recordNum;
 //	std::set<std::string> tableNames;
 //	int64 getBlockNum(std::string tableName);
-//	
+//
 //	/// <summary>
 //	/// 代理引用buffer,通过修改这个函数可以管理缓冲区
 //	/// </summary>
@@ -129,7 +133,7 @@ public:
 //	/// <param name="d">The d.</param>
 //	void insertBlock(std::string tableName, int64 blockSerial, DataBlock d);
 //
-//public:
+// public:
 //	int test();
 //	/// <summary>
 //	/// Initializes a new instance of the <see cref="BufferManager"/> class.
@@ -172,4 +176,6 @@ public:
 //	/// </summary>
 //	/// <param name="tableName">Name of the table.</param>
 //	void dropTable(std::string tableName);
-//};
+// };
+
+#endif

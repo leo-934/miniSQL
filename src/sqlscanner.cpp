@@ -1,4 +1,4 @@
-#include "SqlScanner.h"
+#include "sqlscanner.h"
 #include <cstdio>
 SqlScanner::SqlScanner()
 {

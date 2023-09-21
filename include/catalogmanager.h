@@ -1,18 +1,20 @@
-#pragma once
+#ifndef CATALOGMANAGER
+#define CATALOGMANAGER
 
-#include "Def.h"
+#include "def.h"
 #include <string>
 #include <set>
 #include <map>
 #include <vector>
 
-class CatalogManager {
+class CatalogManager
+{
 private:
-	std::map<std::string, std::vector<std::string> > originalAttrNames;
-	std::map<std::string, std::map<std::string, catalog> > catas;
-	std::map<std::string,std::map<std::string, int> > attrLenForChars;
-	std::map<std::string, std::string> primaryKeys;//若没有，则找不到
-	std::map<std::string, std::vector<std::string> > uniqueKeys;//若没有，则找不到
+	std::map<std::string, std::vector<std::string>> originalAttrNames;
+	std::map<std::string, std::map<std::string, catalog>> catas;
+	std::map<std::string, std::map<std::string, int>> attrLenForChars;
+	std::map<std::string, std::string> primaryKeys;				// 若没有，则找不到
+	std::map<std::string, std::vector<std::string>> uniqueKeys; // 若没有，则找不到
 public:
 	int test();
 	/// <summary>
@@ -38,18 +40,20 @@ public:
 	///// </summary>
 	///// <param name="tableName">Name of the table.</param>
 	///// <returns></returns>
-	//int getTableRecordNum(std::string tableName);
+	// int getTableRecordNum(std::string tableName);
 
 	///// <summary>
 	///// Gets the number of table's block.
 	///// </summary>
 	///// <param name="tableName">Name of the table.</param>
 	///// <returns></returns>
-	//int getTableBlockNum(std::string tableName);
-	
+	// int getTableBlockNum(std::string tableName);
+
 	anyVec getCataInAnyVec(std::string tableName);
 	std::vector<std::string> getAllTableNames();
 	std::vector<std::string> getAllAttrByTableName(std::string tableName);
 	void createTable(CreateTableSentence sent);
 	void dropTable(std::string tableName);
 };
+
+#endif

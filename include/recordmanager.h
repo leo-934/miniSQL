@@ -1,13 +1,17 @@
-#pragma once
-#include<string>
+#ifndef RECORDMANAGER
+#define RECORDMANAGER
+
+#include <string>
 #include <memory>
-#include "BufferManager.h"
-#include "IndexManager.h"
-class RecordManager {
+#include "buffermanager.h"
+#include "indexmanager.h"
+class RecordManager
+{
 private:
 	std::shared_ptr<BufferManager> bufferManager;
 	std::shared_ptr<CatalogManager> catalogManager;
 	std::shared_ptr<IndexManager> indexManager;
+
 public:
 	int test();
 
@@ -41,3 +45,5 @@ public:
 
 	void addPastRecordToIndex(std::string tableName);
 };
+
+#endif

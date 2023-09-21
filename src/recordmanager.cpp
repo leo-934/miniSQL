@@ -1,5 +1,5 @@
 #include <fstream>
-#include "RecordManager.h"
+#include "recordmanager.h"
 int RecordManager::test()
 {
 	return 1;

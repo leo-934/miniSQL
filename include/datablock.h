@@ -1,35 +1,37 @@
-#pragma once
+#ifndef DATABLOCK
+#define DATABLOCK
+
 #include <vector>
 #include <fstream>
-#include "Def.h"
-class DataBlock {
+#include "def.h"
+class DataBlock
+{
 public:
 	DataBlock();
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DataBlock"/> class.
 	/// </summary>
 	/// <param name="_catalog">传入一个vector代表记录的类型</param>
-	DataBlock(anyVec _cata); 
-	
+	DataBlock(anyVec _cata);
+
 	/// <summary>
 	/// 把块读出文件
 	/// </summary>
 	/// <param name="fp">c语言文件指针</param>
-	void fromFile(std::fstream & fs);
+	void fromFile(std::fstream &fs);
 
 	/// <summary>
 	/// 把块写入文件
 	/// </summary>
 	/// <param name="fp">c语言文件指针</param>
-	void toFile(std::fstream & fs);
-
+	void toFile(std::fstream &fs);
 
 	/// <summary>
 	/// 通过在块中的序号得到数据的引用，从0开始数.
 	/// </summary>
 	/// <param name="num">The number.</param>
 	/// <returns></returns>
-	anyVec& at(int num);
+	anyVec &at(int num);
 
 	/// <summary>
 	/// Removes the record.
@@ -41,16 +43,19 @@ public:
 	/// Adds the record.
 	/// </summary>
 	/// <param name="recToAdd">The record to add.</param>
-	void addRecord(anyVec& recToAdd);
+	void addRecord(anyVec &recToAdd);
 
 	anyVec getRecord(int64 recordSerial);
 
 	bool isAbleToAdd();
 	int64 getRecordNum();
 	int64 getRecordMax();
+
 private:
 	int recordMax;
 	int recordSpace;
 	anyVec cata;
 	std::vector<anyVec> records;
 };
+
+#endif

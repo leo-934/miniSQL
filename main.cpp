@@ -4,13 +4,13 @@
 #include <memory>
 #include <string>
 #include <any>
-#include "APP.h"
-#include "BufferManager.h"
-#include "Def.h"
+#include "app.h"
+#include "buffermanager.h"
+#include "def.h"
 #include <fstream>
 int main()
 {
-    APP app;
+    app app;
     app.run();
     return 0;
 }

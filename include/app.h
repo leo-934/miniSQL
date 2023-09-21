@@ -1,13 +1,16 @@
-#pragma once
-#include <memory>
-#include "BufferManager.h"
-#include "IndexManager.h"
-#include "CatalogManager.h"
-#include "Interpreter.h"
-#include "RecordManager.h"
-#include "Writer.h"
+#ifndef APP
+#define APP
 
-class APP {
+#include <memory>
+#include "buffermanager.h"
+#include "indexmanager.h"
+#include "catalogmanager.h"
+#include "interpreter.h"
+#include "recordmanager.h"
+#include "writer.h"
+
+class app
+{
 private:
 	std::shared_ptr<Writer> writer;
 	std::shared_ptr<BufferManager> bufferManager;
@@ -16,8 +19,9 @@ private:
 	std::shared_ptr<CatalogManager> catalogManager;
 	std::shared_ptr<Interpreter> interpreter;
 	bool fileMode;
+
 public:
-	APP();
+	app();
 	/// <summary>
 	/// 开始运行数据库，包括登录，调用interpreter解析语句，调用API模块执行语句.
 	/// </summary>
@@ -29,3 +33,5 @@ public:
 	void execSql(std::shared_ptr<Sentence> parseResult);
 	bool login();
 };
+
+#endif

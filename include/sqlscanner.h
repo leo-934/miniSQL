@@ -1,11 +1,15 @@
-#pragma once
+#ifndef SQLSCANNER
+#define SQLSCANNER
+
 #include <iostream>
 #include <fstream>
-#include "Def.h"
-class SqlScanner {
+#include "def.h"
+class SqlScanner
+{
 private:
 	bool isFromFile;
 	std::ifstream fs;
+
 public:
 	SqlScanner();
 	SqlScanner(std::string filename);
@@ -16,3 +20,5 @@ public:
 	std::string getSqlSentence();
 	~SqlScanner();
 };
+
+#endif

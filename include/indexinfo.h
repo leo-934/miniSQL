@@ -1,6 +1,8 @@
-#pragma once
+#ifndef INDEXINFO
+#define INDEXINFO
+
 #include <string>
-#include "Def.h"
+#include "def.h"
 #include "bplustree.h"
 
 struct IndexInfo
@@ -10,6 +12,8 @@ public:
 	std::string tableName;
 	std::string attrName;
 	catalog type = catalog::INT;
-	void* Tree;
+	void *Tree;
 	bool ifclustered = true;
 };
+
+#endif

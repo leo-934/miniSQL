@@ -1,4 +1,6 @@
-#pragma once
+#ifndef INDEXMANAGER
+#define INDEXMANAGER
+
 #include <string>
 #include <vector>
 #include <fstream>
@@ -6,30 +8,27 @@
 #include <map>
 #include <any>
 #include "indexinfo.h"
-#include "CatalogManager.h"
-#include "Def.h"
+#include "catalogmanager.h"
+#include "def.h"
 /// <summary>
 /// 返回值为vector的函数，如果没有什么可以返回的，就返回一个size为0的vector
 /// 返回值为string的函数，如果没有什么可以返回的，就返回空字符串""。
 /// </summary>
-class IndexManager {
+class IndexManager
+{
 private:
-	
-	std::map<int, IndexInfo*> indexmap;
+	std::map<int, IndexInfo *> indexmap;
 	std::shared_ptr<CatalogManager> catalogManager;
 	int getdegree(catalog type);
 	int getkeysize(catalog type);
-
 
 	void writeintoBuffer();
 
 	void readfromBuffer();
 
-	void* getindex(std::string tableName, std::string indexName);
-		
+	void *getindex(std::string tableName, std::string indexName);
+
 public:
-
-
 	int test();
 
 	/// <summary>
@@ -47,7 +46,7 @@ public:
 	/// <param name="indexName">Name of the index.</param>
 	/// <param name="tableName">Name of the table.</param>
 	/// <param name="attrName">Name of the attribute.</param>
-    void* createIndex(std::string indexName, std::string tableName, std::string attrName);
+	void *createIndex(std::string indexName, std::string tableName, std::string attrName);
 	/// <summary>
 	/// 删除掉指定表的叫做指定索引名的索引
 	/// </summary>
@@ -61,7 +60,7 @@ public:
 	void dropAllIndex(std::string tableName);
 
 	void insertToIndex(std::string indexName, std::string tableName, std::any key, int64 value);
-	
+
 	std::vector<int64> selectIndexsByCondition(std::string tableName, std::string indexName, std::vector<condition> cond);
 
 	void removeIndexByAddress(std::string tableName, std::vector<int64> addresses);
@@ -110,7 +109,7 @@ public:
 	/// <param name="tableName">Name of the table.</param>
 	/// <returns></returns>
 	std::vector<std::string> getAllIndex(std::string tableName);
-	
+
 	/// <summary>
 	/// Gets the name of the attribute name by index name and table name.
 	/// </summary>
@@ -126,5 +125,7 @@ public:
 	/// <returns></returns>
 	std::string getIndexNameByAttrName(std::string attrName, std::string tableName);
 
-	//std::string getBestIndex(std::string tableName);
+	// std::string getBestIndex(std::string tableName);
 };
+
+#endif

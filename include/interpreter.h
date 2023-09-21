@@ -1,8 +1,10 @@
-#pragma once
-#include "Def.h"
-#include "CatalogManager.h"
+#ifndef INTERPRETER
+#define INTERPRETER
+
+#include "def.h"
+#include "catalogmanager.h"
 #include <iostream>
-#include <map> 
+#include <map>
 #include <vector>
 #include <string>
 #include <memory>
@@ -10,14 +12,20 @@
 #include <exception>
 #include <fstream>
 
-class Interpreter {
+class Interpreter
+{
 private:
 	std::shared_ptr<CatalogManager> catalogManager;
 	std::string getword(std::string s, int *i);
 	std::string getlowerword(std::string s);
+
 public:
 	Interpreter(std::shared_ptr<CatalogManager> ptr);
-	std::shared_ptr<Sentence> parseSql(std::string s);	
+	std::shared_ptr<Sentence> parseSql(std::string s);
 };
 
-class SyntaxException{};
+class SyntaxException
+{
+};
+
+#endif

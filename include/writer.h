@@ -1,14 +1,18 @@
-#pragma once
+#ifndef WRITER
+#define WRITER
+
 #include <iostream>
 #include <any>
 #include <memory>
 #include <ctime>
-#include "CatalogManager.h"
-#include "Def.h"
+#include "catalogmanager.h"
+#include "def.h"
 
-class Writer {
+class Writer
+{
 private:
 	std::shared_ptr<CatalogManager> catalogManager;
+
 public:
 	Writer(std::shared_ptr<CatalogManager> _catalogManager);
 	void writeTime(clock_t execTime);
@@ -21,3 +25,5 @@ public:
 	void writeSplitLine(std::vector<int> lens);
 	void writePromt(std::string userName);
 };
+
+#endif
